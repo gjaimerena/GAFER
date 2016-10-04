@@ -1,0 +1,578 @@
+﻿@model IEnumerable<GAFER.Alumnos>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h3>Detalle de alumnos</h3>
+
+<p>
+    @Html.ActionLink("Nuevo Alumno ", "Create", null, new { @class = "btn btn-primary" })
+    &nbsp;
+    <table id="listar" class="table table-bordered" style="background-color:#ffffff;">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayName("Codigo Alumno")
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Apellido)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Nombre)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Mail)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Observaciones)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Condicion)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Telefono)
+                </th>
+               
+               
+                <th></th>
+            </tr>
+
+        </thead>
+
+        <tbody></tbody>
+    </table>
+
+    <div class="modal fade" id="modalAM" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Editar Alumno</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form">
+
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label"
+                                   for="codigo">Codigo Alumno</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="codigo" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label"
+                                   for="apellido">Apellido</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="apellido" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label"
+                                   for="nombre">Nombre</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="nombre" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label" for="email">Email</label>
+                            <div class="col-sm-8">
+                                <input type="email" class="form-control" id="email" />
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label"
+                                   for="observaciones">Observaciones</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="observaciones" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label"
+                                   for="condicion">Condicion</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="condicion" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label"
+                                   for="telefono">Telefono</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control"
+                                       id="telefono" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label"
+                                   for="importe1">Importe 1er Venc.</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control"
+                                       id="importe1" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label"
+                                   for="importe2">Importe 2do Venc.</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control"
+                                       id="importe2" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label"
+                                   for="importe3">Importe 3er Venc.</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control"
+                                       id="importe3" />
+                            </div>
+                        </div>
+
+                        <input type="text" class="form-control"
+                               id="IdAlumno" style="visibility:hidden" />
+
+
+
+                    </form>
+                    <!-- Modal Footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
+                        <button type="button" id="btnSaveEdit" class="btn btn-primary">Actualizar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="PagoModal" data-id="0" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" data-dismiss="modal" aria-hidden="true" class="close">×</a>
+                    <h3>Generar Talon de Pago </h3>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form">
+
+                        
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label"
+                                   for="importe1">Importe 1er Venc</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="importe1_pago" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label"
+                                   for="fecha1">Fecha 1er Venc.</label>
+                            <div class="span5 col-sm-8" id="sandbox-container">
+                                <input type="text" id="fecha1" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label"
+                                   for="importe2">Importe 2do Venc</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="importe2_pago" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label"
+                                   for="fecha2">Fecha 2do Venc.</label>
+                            <div class="span5 col-sm-8" id="sandbox-container">
+                                <input type="text" id="fecha2" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label"
+                                   for="importe3">Importe 3er Venc</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="importe3_pago" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+
+                            <label class="col-sm-4 control-label"
+                                   for="fecha3">
+                                Fecha 3er Venc.
+                            </label>
+                            <div class="span5 col-sm-8" id="sandbox-container">
+                                <input type="text" id="fecha3" class="form-control">
+                            </div>
+
+                        </div>
+
+                        <input type="text" class="form-control"
+                               id="IdAlumnoPago" style="visibility:hidden" />
+                        @*<div class="form-group">
+                            <div class="col-sm-2">
+                                <a href="#" id="btnDescargarPDF" class="btn btn-success" download="">Descargar</a>
+                             </div>
+                             <div class="col-sm-2">
+                                <a href="#" id="btnEnviarXMail" class="btn btn-primary">Enviar</a>
+                             </div>
+                           
+                        </div>*@
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" id="btnGenerarTalon" class="btn btn-success">Generar</a>
+                    <a href="#" data-dismiss="modal" aria-hidden="true" class="btn btn-primary">Cancelar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="deleteModal" data-id="0" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" data-dismiss="modal" aria-hidden="true" class="close">×</a>
+                    <h3>Borrar alumno</h3>
+                </div>
+                <div class="modal-body">
+                    Eliminaras el alumno.
+                    ¿Estas seguro?
+                </div>
+                <div class="modal-footer">
+                    <a href="#" id="btnYes" class="btn btn-danger" >Eliminar</a>
+                    <a href="#" data-dismiss="modal" aria-hidden="true" class="btn btn-primary">Cancelar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="DownloadFileModal" data-pdfPath="#" data-id="0" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" data-dismiss="modal" aria-hidden="true" class="close">×</a>
+                    <h3>Descargar Talon</h3>
+                </div>
+                <div class="modal-body">
+                    Se descargará el último talon de pago generado
+                </div>
+                <div class="modal-footer">
+                    <a href="#" id="btnDowload" class="btn btn-danger" download="">Descargar</a>
+                    <a href="#" data-dismiss="modal" aria-hidden="true" class="btn btn-primary">Cancelar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="ErrorDownloadFileModal"  data-id="0" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" data-dismiss="modal" aria-hidden="true" class="close">×</a>
+                    <h3>Descargar Talon</h3>
+                </div>
+                <div class="modal-body">
+                   No existen talon generados para dicho alumno, genere el talon y vuelva a intentarlo.
+                </div>
+                <div class="modal-footer">
+                    
+                    <a href="#" data-dismiss="modal" aria-hidden="true" class="btn btn-danger">Cancelar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+@section scripts
+{
+      
+        @Scripts.Render("~/bundles/datatables")
+        
+        <script type="text/javascript">
+
+            $('#sandbox-container input').datepicker({
+            });
+
+            $(document).ready(function () {
+                $('#listar').dataTable({
+                    "bServerSide": true,
+                    "sAjaxSource": '@Url.Action("GetDataAlumnos", "Alumnos")',
+                    "bProcessing": true,
+                    "bdestroy": true,
+                    "start": 0,
+                    "order": [0, "asc"],
+                    "bDeferRender": true,
+                    "oLanguage": {
+                        "sUrl": "../Scripts/DataTables/dataTables.es.js"
+
+                    },
+                    "aoColumns": [
+                            //{ "sName": "IdAlumno", "mData": "IdAlumno"},
+                            { "sName": "CodigoAlumno", "mData": "CodigoAlumno" },
+                            { "sName": "Apellido", "mData": "Apellido" },
+                            { "sName": "Nombre", "mData": "Nombre" },
+                            { "sName": "Mail", "mData": "Mail" },
+                            { "sName": "Observaciones", "mData": "Observaciones" },
+                            { "sName": "Condicion", "mData": "Condicion" },
+                            { "sName": "Telefono", "mData": "Telefono" },
+                            //{ "sName": "Importe1", "mData": "Importe1" },
+                            //{ "sName": "Importe2", "mData": "Importe2" },
+                            //{ "sName": "Importe3", "mData": "Importe3" },
+                            {
+                                "mDataProp": "IdAlumno",
+                                "bSortable": false,
+                                "sClass": "dt-center",
+                                "sWidth": "15%",
+                                "mRender": function (data, type, row) {
+                                    console.log(data);
+                                    return "<a href='#' onclick='Editar(" + data +")' title='Editar'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></a>"+
+                                        "&nbsp;&nbsp;<a href='#' data-id=" + data + " onclick='Eliminar(" + data + ")' title='Eliminar'><i class='fa fa-times-circle fa-lg'></i></a>" +
+                                         "&nbsp;&nbsp;<a href='#' data-id=" + data + " onclick='generarTalon(" + data + ")' title='PF'><img src='../Images/cupones-pagofacil.png' alt='Pago'/></a>"+
+                                         "&nbsp;&nbsp;<a href='#' data-id=" + data + " onclick='Descargar(" + data + ")' title='Descargar'><i class='fa fa-download' aria-hidden='true'></i></a>" +
+                                         "&nbsp;&nbsp;<a href='#' data-id=" + data + " onclick='Enviar(" + data + ")' title='Enviar'><i class='fa fa-envelope' aria-hidden='true'></i></a>";
+                                }
+                            }
+                           
+            
+
+
+                    ],
+                });
+            });
+
+
+            function Editar(data) {
+                var id = data;
+             
+                 $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("GetDataAlumnoForEdit", "Alumnos")",
+                        data: "{'id': " + id + "}",
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (alumno) {
+                           
+                            if (alumno != null) {
+                                $('#IdAlumno').val(alumno.IdAlumno);
+                                    $('#codigo').val(alumno.CodigoAlumno);
+                                    $('#apellido').val(alumno.Apellido);
+                                    $('#nombre').val(alumno.Nombre);
+                                    $('#email').val(alumno.Mail);
+                                    $('#observaciones').val(alumno.Observaciones);
+                                    $('#condicion').val(alumno.Condicion);
+                                    $('#telefono').val(alumno.Telefono);
+                                    $('#importe1').val(alumno.Importe1);
+                                    $('#importe2').val(alumno.Importe2);
+                                    $('#importe3').val(alumno.Importe3);
+                                    $('#modalAM').modal('show');
+                            }
+                            else {
+                                alert("Error al obtener datos del alumno");
+                            }
+                        },
+                        error: function (json) {
+                            alert('Error al procesar la modificación');
+                        }
+                    });
+            }
+
+            function Descargar(data) {
+                var id = data;
+                
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("DownloadPdf", "Alumnos")",
+                    data: "{'id': " + id + "}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (pdfPath) {
+                    if (pdfPath != "notFound") {
+
+                        $('#DownloadFileModal').data('pdfPath', pdfPath).modal('show');
+                        $('#btnDowload').attr("href", "http://" + window.location.host + "/pdfs/" + pdfPath);
+                    }
+                    else {
+                        $('#ErrorDownloadFileModal').modal('show');
+                    }
+                },
+                error: function (json) {
+                }
+            });
+            }
+
+            $('#btnSaveEdit').click(function () {
+                Alumno = {
+                    IdALumno: $('#IdAlumno').val(),
+                    CodigoAlumno: $('#codigo').val(),
+                    Apellido:  $('#apellido').val(),
+                    Nombre: $('#nombre').val(),
+                    Mail: $('#email').val(),
+                    Observaciones: $('#observaciones').val(),
+                    Condicion: $('#condicion').val(),
+                    Telefono: $('#telefono').val(),
+                    Importe1:  $('#importe1').val(),
+                    Importe2: $('#importe2').val(),
+                    Importe3: $('#importe3').val()
+                };
+
+                var dataToSend = JSON.stringify(Alumno);
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("EditarAlumno", "Alumnos")",
+                    data: dataToSend,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (json) {
+                        if (json == "Success") {
+                            $('#modalAM').modal('hide');
+                            alert("Se actualizo exitosamente");
+                            $('#listar').dataTable()._fnAjaxUpdate();
+                        }
+                        else {
+                            alert("ERROR: " + json);
+                        }
+                    },
+                    error: function (json) {
+                        alert('Error al actualizar alumno' + json);
+                    }
+                });
+
+                $('#modalAM').modal('hide');
+                $('#listar').dataTable()._fnAjaxUpdate();
+
+
+            });
+
+
+            function getFormattedDate(date) {
+                var year = date.getFullYear();
+                var month = (1 + date.getMonth()).toString();
+                month = month.length > 1 ? month : '0' + month;
+                var day = date.getDate().toString();
+                day = day.length > 1 ? day : '0' + day;
+                return month + '/' + day + '/' + year;
+            }
+
+            function generarTalon(data) {
+                var id = data;
+                var alumno;
+
+                var date = new Date();
+                date = getFormattedDate(date);
+
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("GetDataAlumnoForEdit", "Alumnos")",
+                    data: "{'id': " + id + "}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (alumno) {
+
+                    if (alumno != null) {
+                        
+                        $('#importe1_pago').val(alumno.Importe1);
+                        $('#importe2_pago').val(alumno.Importe2);
+                        $('#importe3_pago').val(alumno.Importe3);
+                        $('#fecha1').val(date);
+                        $('#fecha2').val(date);
+                        $('#fecha3').val(date);
+                       
+                        $('#PagoModal').data('id', data).modal('show');
+                        $('#resultado').hide();
+                    }
+                    else {
+                        alert("Error al obtener datos del alumno");
+                    }
+                },
+                error: function (json) {
+                    alert('Error al procesar la modificación');
+                }
+            });
+
+            };
+
+
+            function Eliminar(data) {
+                var id = data;
+                $('#deleteModal').data('id', data).modal('show');
+            };
+
+
+            $('#btnYes').click(function () {
+                // handle deletion here
+                var id = $('#deleteModal').data('id');
+                
+                $('[data-id=' + id + ']').closest("tr").remove();
+
+                //elimino
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("EliminarAlumnos", "Alumnos")",
+                        data: "{'id': " + id + "}",
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (json) {
+                            if (json == "Success") {
+                                $('#deleteModal').modal('hide');
+                                alert("Se elimino exitosamente");
+                                $('#listar').dataTable()._fnAjaxUpdate();
+                            }
+                            else {
+                                alert("Error al eliminar");
+                            }
+                        },
+                        error: function (json) {
+                            alert('Error al procesar la baja' + json);
+                        }
+                    });
+                $('#deleteModal').modal('hide');
+            });
+
+            $('#btnGenerarTalon').click(function () {
+
+                var id = $('#PagoModal').data('id');
+                Talon = {
+                    IdALumno: id,
+                    importe1: $('#importe1_pago').val(),
+                    importe2: $('#importe2_pago').val(),
+                    importe3: $('#importe3_pago').val(),
+                    fechaVenc1: $('#fecha1').val(),
+                    fechaVenc2: $('#fecha2').val(),
+                    fechaVenc3: $('#fecha3').val()
+
+                };
+
+                var dataToSend = JSON.stringify(Talon);
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("GenerarTalon", "Alumnos")",
+                    data: dataToSend,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (json) {
+                    if (json == "Success") {
+
+                        //alert("Se actualizo exitosamente");
+                        $('#resultado').show();
+                        $('#btnDescargarPDF').attr("href", "../pdfs/newFile.pdf");
+                        //style = "visibility:hidden"
+                    }
+                    else {
+                        alert("ERROR: " + json);
+                        $('#resultado').hide();
+                    }
+                },
+                error: function (json) {
+                    alert('Error al procesar la baja' + json);
+                }
+            });
+
+            $('#modalAM').modal('hide');
+
+
+            });
+        </script>
+    }
+

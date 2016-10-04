@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+   <link href="~/Content/jquery-ui.css" rel="stylesheet" />
+    
+    
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    @if (User.Identity.IsAuthenticated)
+    {
+    <div class="navbar navbar-inverse navbar-fixed-top" style="background: linear-gradient(to right, #F9F9F9 , #AFDACA);" >
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("GAFER", "Index", "Home", null, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    @*<li>@Html.ActionLink("Home", "Index", "Home")</li>*@
+                    
+                    @if (User.Identity.Name == "gabriel")
+                    {
+
+                    <li>@Html.ActionLink("ROLES", "Index", "Roles")</li>
+                    <li>@Html.ActionLink("ADMINISTRACION", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+
+                    }
+                    <li>@Html.ActionLink("ALUMNOS", "Index", "Alumnos")</li>
+                    <li>@Html.ActionLink("CONTACTO", "Contact", "Home")</li>
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </div>
+    }
+    <div class="container body-content">
+        <p><div class="alert">@ViewBag.ResultMessage</div></p>
+        @RenderBody()
+        <hr />
+
+        <footer>
+            <p>&copy; @DateTime.Now.Year - GAFER Net </p>
+        </footer>
+    </div>
+
+    @*<div id="modal-container" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-content" style=" width: 600px !important; margin: 30px auto !important;">
+        </div>
+    </div>*@
+
+    @Scripts.Render("~/bundles/jquery")
+    
+    <script src="~/Scripts/formvalidation/formValidation.min.js"></script>
+    <script src="~/Scripts/formvalidation/bootstrap.min.js"></script>
+    
+    <script src="~/Scripts/notify.min.js"></script>
+   
+    @Scripts.Render("~/bundles/bootstrap")
+    
+    
+
+    <!-- FormValidation plugin and the class supports validating Bootstrap form -->
+    
+    @*<script type="text/javascript" src="~/Scripts/Modals.js"></script>*@
+    @RenderSection("scripts", required: false)
+
+    @*<script>
+  $( function() {
+      $(".datepicker").datepicker({
+          dateFormat: "dd/mm/yy"
+      }).datepicker("setDate", "0");
+  } );
+    </script>*@
+
+    
+</body>
+</html>

@@ -1,0 +1,1032 @@
+﻿@model IEnumerable<GAFER.Alumnos>
+
+@{
+    <style type="text/css">
+        #formAM .form-control-feedback {
+            pointer-events: auto;
+        }
+
+            #formAM .form-control-feedback:hover {
+                cursor: pointer;
+            }
+    </style>
+}
+
+@*<div class="row">
+    <p class="h1">LISTADO DE ALUMNOS</p>
+</div>*@
+
+<div class="row">
+    <div class="col-sm-4"><button type="button" id="btnAddAlumno" class="btn btn-primary">Nuevo Alumno</button></div>
+    <div class="col-sm-4 notifi"></div>
+</div>
+<hr />
+@*@Html.ActionLink("Nuevo Alumno ", "Create", null, new { @class = "btn btn-primary" })*@
+
+<table id="listar" class="table table-bordered" style="background-color:#ffffff;">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayName("Codigo Alumno")
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Apellido)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Mail)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Observaciones)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Condicion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Telefono)
+            </th>
+            <th>
+                OPCIONES
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>
+
+<div class="modal fade modalAM" id="modalAM" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Editar Alumno</h4>
+            </div>
+            <div class="modal-body">
+                <form id="formAM" class="form-horizontal" role="form">
+
+                    <div class="form-group">
+                        <label class="col-xs-4 control-label">Codigo Alumno</label>
+                        <div class="col-xs-8">
+                            <input type="text" class="form-control" id="codigo" name="codigo" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-xs-4 control-label">Apellido</label>
+                        <div class="col-xs-8">
+                            <input type="text" class="form-control" id="apellido" name="apellido" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-4 control-label">Nombre</label>
+                        <div class="col-xs-8">
+                            <input size="48" type="text" class="form-control" id="nombre" name="nombre" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-xs-4 control-label">Email</label>
+                        <div class="col-xs-8">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Ingrese un email" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-4 control-label" for="observaciones">Observaciones</label>
+                        <div class="col-xs-8">
+                            <input type="text" class="form-control" id="observaciones" name="observaciones" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-4 control-label" for="condicion">Condicion</label>
+                        <div class="col-xs-8">
+                            <input type="text" class="form-control" id="condicion" name="condicion" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-4 control-label" for="telefono">Telefono</label>
+                        <div class="col-xs-8">
+                            <input type="text" class="form-control" id="telefono" name="telefono" />
+                        </div>
+                    </div>
+
+
+                    <div class="form-group" style="@ViewBag.importe1_div" >
+                        <label class="col-xs-4 control-label"
+                               for="importe1">Importe 1er Venc.</label>
+                        <div class="col-xs-8">
+                            <input type="@ViewBag.importe1_input" class="form-control" name="importe1" id="importe1" />
+                        </div>
+                    </div>
+                    <div class="form-group" style="@ViewBag.importe2_div">
+                        <label class="col-xs-4 control-label"
+                               for="importe2">Importe 2do Venc.</label>
+                        <div class="col-xs-8">
+                            <input type="@ViewBag.importe2_input" class="form-control" name="importe2" id="importe2" />
+                        </div>
+                    </div>
+                    <div class="form-group" style="@ViewBag.importe3_div">
+                        <label class="col-xs-4 control-label"
+                               for="importe3">Importe 3er Venc.</label>
+                        <div class="col-xs-8">
+                            <input type="@ViewBag.importe3_input" class="form-control" id="importe3" name="importe3" />
+                        </div>
+                    </div>
+
+                    <input type="text" class="form-control" id="IdAlumno" style="visibility:hidden" />
+                    <!-- Modal Footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
+                        <button type="button" id="btnSaveEdit" class="btn btn-primary">Actualizar</button>
+
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="PagoModal" data-id="0" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" data-dismiss="modal" aria-hidden="true" class="close">×</a>
+                <h3>Generar Talon de Pago </h3>
+            </div>
+            <div class="modal-body">
+                <form id="formpago" class="form-horizontal" role="form">
+
+
+                    <div class="form-group" style="@ViewBag.importe1_div">
+                        <label class="col-sm-4 control-label"
+                               for="importe1">Importe 1er Venc</label>
+                        <div class="col-sm-8">
+                            <input type="@ViewBag.importe1_input" class="form-control" id="importe1_pago" name="importe1_pago"   />
+                        </div>
+                    </div>
+                    <div class="form-group" style="@ViewBag.importe1_div">
+                        <label class="col-sm-4 control-label"
+                               for="fecha1">Fecha 1er Venc.</label>
+                        <div class="col-sm-8" id="sandbox-container">
+                            <input type="@ViewBag.importe1_input" id="fecha1" name="fecha1" class="form-control" />
+
+                        </div>
+                    </div>
+
+                   
+
+                    <div class="form-group" style="@ViewBag.importe2_div">
+                        <label class="col-sm-4 control-label"
+                               for="importe2">Importe 2do Venc</label>
+                        <div class="col-sm-8">
+                            <input type="@ViewBag.importe2_input" class="form-control" id="importe2_pago" name="importe2_pago"   />
+                        </div>
+                    </div>
+                    <div class="form-group" style="@ViewBag.importe2_div">
+                        <label class="col-sm-4 control-label"
+                               for="fecha2">Fecha 2do Venc.</label>
+                        <div class="col-sm-8" id="sandbox-container">
+                            <input type="@ViewBag.importe2_input" id="fecha2" name="fecha2" class="form-control" />
+                           
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="@ViewBag.importe3_div">
+                        <label class="col-sm-4 control-label"
+                               for="importe3">Importe 3er Venc</label>
+                        <div class="col-sm-8">
+                            <input type="@ViewBag.importe3_input" class="form-control" id="importe3_pago" name="importe3_pago"   />
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="@ViewBag.importe3_div">
+
+                        <label class="col-sm-4 control-label"
+                               for="fecha3">
+                            Fecha 3er Venc.
+                        </label>
+                        <div class="col-sm-8" id="sandbox-container">
+                            <input type="@ViewBag.importe3_input" id="fecha3" class="form-control" name="fecha3">
+                        </div>
+
+                    </div>
+
+                    <input type="text" class="form-control"
+                           id="IdAlumnoPago" style="visibility:hidden" />
+                    @*<div class="form-group">
+                            <div class="col-sm-2">
+                                <a href="#" id="btnDescargarPDF" class="btn btn-success" download="">Descargar</a>
+                             </div>
+                             <div class="col-sm-2">
+                                <a href="#" id="btnEnviarXMail" class="btn btn-primary">Enviar</a>
+                             </div>
+
+                        </div>*@
+                </form>
+            </div>
+            <div class="modal-footer">
+                <a href="#" id="btnGenerarTalon" class="btn btn-success">Generar</a>
+                <a href="#" data-dismiss="modal" aria-hidden="true" class="btn btn-primary">Cancelar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="deleteModal" data-id="0" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" data-dismiss="modal" aria-hidden="true" class="close">×</a>
+                <h3>Borrar alumno</h3>
+            </div>
+            <div class="modal-body">
+                Eliminaras el alumno.
+                ¿Estas seguro?
+            </div>
+            <div class="modal-footer">
+                <a href="#" id="btnYes" class="btn btn-danger">Eliminar</a>
+                <a href="#" data-dismiss="modal" aria-hidden="true" class="btn btn-primary">Cancelar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="DownloadFileModal" data-pdfPath="#" data-id="0" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" data-dismiss="modal" aria-hidden="true" class="close">×</a>
+                <h3>Descargar Talon</h3>
+            </div>
+            <div class="modal-body">
+                Se descargará el último talon de pago generado
+            </div>
+            <div class="modal-footer">
+                <a href="#" id="btnDowload" class="btn btn-danger" download="">Descargar</a>
+                <a href="#" data-dismiss="modal" aria-hidden="true" class="btn btn-primary">Cancelar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="ErrorDownloadFileModal" data-id="0" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" data-dismiss="modal" aria-hidden="true" class="close">×</a>
+                <h3>Descargar Talon</h3>
+            </div>
+            <div class="modal-body">
+                No existen talon generados para dicho alumno, genere el talon y vuelva a intentarlo.
+            </div>
+            <div class="modal-footer">
+
+                <a href="#" data-dismiss="modal" aria-hidden="true" class="btn btn-danger">Cancelar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/datatables")
+
+    <script>
+         $(document).ready(function () {
+                $('#formAM')
+                    // IMPORTANT: You must declare .on('init.field.fv')
+                    // before calling .formValidation(options)
+                    .on('init.field.fv', function (e, data) {
+                        // data.fv      --> The FormValidation instance
+                        // data.field   --> The field name
+                        // data.element --> The field element
+                        var $parent = data.element.parents('.form-group'),
+                            $icon = $parent.find('.form-control-feedback[data-fv-icon-for="' + data.field + '"]');
+
+                        // You can retrieve the icon element by
+                        // $icon = data.element.data('fv.icon');
+                        $icon.on('click.clearing', function () {
+                            // Check if the field is valid or not via the icon class
+                            if ($icon.hasClass('glyphicon-remove')) {
+                                // Clear the field
+                                data.fv.resetField(data.element);
+                            }
+                        });
+                        e.preventDefault();
+                    })
+
+                    .formValidation({
+                        framework: 'bootstrap',
+                        icon: {
+                            // valid: 'glyphicon glyphicon-ok',
+                            invalid: 'glyphicon glyphicon-remove',
+                            validating: 'glyphicon glyphicon-refresh'
+                        },
+                        excluded: [':disabled', ':hidden', ':not(:visible)'],
+                        //excluded: ':disabled', //requerido si usamos form en modal
+                        fields: {
+                            codigo: {
+                                validators: {
+                                    notEmpty: {
+                                        message: 'El codigo alumno es requerido'
+                                    },
+                                    stringLength: {
+                                        message: 'El codigo puede contener hasta 9 dígitos',
+                                        max: 9,
+                                        min: 1
+                                    },
+                                    numeric: {
+                                        message: 'El codigo debe ser numérico',
+                                        // The default separators
+                                        //thousandsSeparator: '',
+                                        //decimalSeparator: '.'
+                                    }
+                                }
+                            },
+                            apellido: {
+                                validators: {
+                                    notEmpty: {
+                                        message: 'El campor es requerido'
+                                    }
+                                }
+                            },
+                            nombre: {
+                                validators: {
+                                    notEmpty: {
+                                        message: 'El campor es requerido'
+                                    }
+                                }
+                            },
+                            email: {
+                                validators: {
+                                    notEmpty: {
+                                        message: 'El campor es requerido'
+                                    },
+                                    emailAddress: {
+                                        message: 'El campo no es un mail válido'
+                                    }
+                                }
+                            },
+                            observaciones: {
+                                validators: {
+                                    //notEmpty: {
+                                    //    message: 'El campor es requerido'
+                                    //}
+                                }
+                            },
+                            condicion: {
+                                validators: {
+                                    notEmpty: {
+                                        message: 'El campor es requerido'
+                                    },
+                                    numeric: {
+                                        message: 'La condicion debe ser numérico (0 Default)',
+                                        // The default separators
+                                        //thousandsSeparator: '',
+                                        //decimalSeparator: '.'
+                                    }
+                                }
+                            },
+                            telefono: {
+                                validators: {
+                                    //notEmpty: {
+                                    //    message: 'El campor es requerido'
+                                    //}
+                                }
+                            },
+                            importe1: {
+                                validators: {
+                                    //notEmpty: {
+                                    //    message: 'El campor es requerido'
+                                    //},
+                                    numeric: {
+                                        message: 'El importe debe ser decimal',
+                                        // The default separators
+                                        thousandsSeparator : '',
+                                        decimalSeparator   : ','
+                                    },
+                                    between: {
+                                        min: 1,
+                                        max: 10000,
+                                        message: 'el importe de ser entre 0 (cero) y 10000'
+                                    }
+                                }
+                            },
+                            importe2: {
+                                validators: {
+                                    //notEmpty: {
+                                    //    message: 'El campor es requerido'
+                                    //},
+                                    numeric: {
+                                        message: 'El importe debe ser decimal',
+                                        // The default separators
+                                        thousandsSeparator: '',
+                                        decimalSeparator: ','
+                                    },
+                                    between: {
+                                        min: 1,
+                                        max: 10000,
+                                        message: 'el importe de ser entre 0 (cero) y 10000'
+                                    }
+                                }
+                            },
+                            importe3: {
+                                validators: {
+                                    //notEmpty: {
+                                    //    message: 'El campor es requerido'
+                                    //},
+                                    numeric: {
+                                        message: 'El importe debe ser decimal',
+                                        // The default separators
+                                        thousandsSeparator: '',
+                                        decimalSeparator: ','
+                                    },
+                                    between: {
+                                        min: 1,
+                                        max: 10000,
+                                        message: 'el importe de ser entre 0 (cero) y 10000'
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+
+            });
+
+            $('#modalAM').on('hidden.bs.modal', function () {
+                $('#formAM').formValidation('resetForm', true);
+            });
+
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('#formpago')
+                // IMPORTANT: You must declare .on('init.field.fv')
+                // before calling .formValidation(options)
+                .on('init.field.fv', function (e, data) {
+                    // data.fv      --> The FormValidation instance
+                    // data.field   --> The field name
+                    // data.element --> The field element
+
+                    var $parent = data.element.parents('.form-group'),
+                        $icon = $parent.find('.form-control-feedback[data-fv-icon-for="' + data.field + '"]');
+
+                    // You can retrieve the icon element by
+                    // $icon = data.element.data('fv.icon');
+
+                    $icon.on('click.clearing', function () {
+                        // Check if the field is valid or not via the icon class
+                        if ($icon.hasClass('glyphicon-remove')) {
+                            // Clear the field
+                            data.fv.resetField(data.element);
+                        }
+                    });
+
+                    e.preventDefault();
+                })
+
+
+
+                .formValidation({
+                    framework: 'bootstrap',
+                    icon: {
+                        // valid: 'glyphicon glyphicon-ok',
+                        invalid: 'glyphicon glyphicon-remove',
+                        validating: 'glyphicon glyphicon-refresh'
+                    },
+                    excluded: [':disabled', ':hidden', ':not(:visible)'],
+                    //excluded: ':disabled', //requerido si usamos form en modal
+                    fields: {
+                        importe1_pago: {
+                            validators: {
+                                notEmpty: {
+                                    message: 'El importe es requerido'
+                                },
+                                
+                                numeric: {
+                                    message: 'El valor debe ser numérico',
+                                    // The default separators
+                                    thousandsSeparator: '',
+                                    decimalSeparator: ','
+                                },
+                                between: {
+                                    min: 1,
+                                    max: 10000,
+                                    message: 'el importe de ser entre 0 (cero) y 10000'
+                                }
+                            }
+                        },
+                        importe2_pago: {
+                            validators: {
+                                notEmpty: {
+                                    message: 'El importe es requerido'
+                                },
+
+                                numeric: {
+                                    message: 'El valor debe ser numérico',
+                                    // The default separators
+                                    thousandsSeparator: '',
+                                    decimalSeparator: ','
+                                },
+                                between: {
+                                    min: 1,
+                                    max: 10000,
+                                    message: 'el importe de ser entre 0 (cero) y 10000'
+                                }
+                            }
+                        },
+                        importe3_pago: {
+                            validators: {
+                                notEmpty: {
+                                    message: 'El importe es requerido'
+                                },
+
+                                numeric: {
+                                    message: 'El valor debe ser numérico',
+                                    // The default separators
+                                    thousandsSeparator: '',
+                                    decimalSeparator: ','
+                                },
+                                between: {
+                                    min: 1,
+                                    max: 10000,
+                                    message: 'el importe de ser entre 0 (cero) y 10000'
+                                }
+                            }
+                        },
+                        fecha1: {
+                            validators: {
+                                notEmpty: {
+                                    message: 'El campor es requerido'
+                                },
+                                date: {
+                                    format: 'DD/MM/YYYY',
+                                    message: 'Formato de no valido, use DD/MM/YYYY'
+                                }
+                            }
+                        },
+                        fecha2: {
+                            validators: {
+                                notEmpty: {
+                                    message: 'El campor es requerido'
+                                },
+                                date: {
+                                    format: 'DD/MM/YYYY',
+                                    message: 'Formato de no valido, use DD/MM/YYYY'
+                                }
+                            }
+                        },
+                        fecha3: {
+                            validators: {
+                                notEmpty: {
+                                    message: 'El campor es requerido'
+                                },
+                                date: {
+                                    format: 'DD/MM/YYYY',
+                                    message: 'Formato de no valido, use DD/MM/YYYY'
+                                }
+                            }
+                        }
+                    }
+                });
+
+
+        });
+
+
+        
+
+        $('#formpago').on('hidden.bs.modal', function () {
+            $('#formpago').formValidation('resetForm', true);
+        });
+
+    </script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#fecha1').datepicker({
+                dateFormat: 'dd/mm/yy'
+            });
+            $('#fecha1').change(function () {
+                $('#formpago').formValidation('revalidateField', 'fecha1');
+                //Change code!
+            });
+
+
+            $('#fecha2').datepicker({ dateFormat: 'dd/mm/yy' });
+            $('#fecha2').change(function () {
+                $('#formpago').formValidation('revalidateField', 'fecha2');
+                //Change code!
+            });
+            $('#fecha3').datepicker({ dateFormat: 'dd/mm/yy' });
+            $('#fecha3').change(function () {
+                $('#formpago').formValidation('revalidateField', 'fecha3');
+                //Change code!
+            });
+         
+        });
+
+        $(document).ready(function () {
+            $('#listar').dataTable({
+                "bServerSide": true,
+                "sAjaxSource": '@Url.Action("GetDataAlumnos", "Alumnos")',
+                "bProcessing": true,
+                "bdestroy": true,
+                "start": 0,
+                "order": [0, "asc"],
+                "bDeferRender": true,
+                "oLanguage": { "sUrl": "../Scripts/DataTables/dataTables.es.js" },
+                "aoColumns": [
+                        //{ "sName": "IdAlumno", "mData": "IdAlumno"},
+                        { "sName": "CodigoAlumno", "mData": "CodigoAlumno" },
+                        { "sName": "Apellido", "mData": "Apellido" },
+                        { "sName": "Nombre", "mData": "Nombre" },
+                        { "sName": "Mail", "mData": "Mail" },
+                        { "sName": "Observaciones", "mData": "Observaciones" },
+                        { "sName": "Condicion", "mData": "Condicion" },
+                        { "sName": "Telefono", "mData": "Telefono" },
+                        //{ "sName": "Importe1", "mData": "Importe1" },
+                        //{ "sName": "Importe2", "mData": "Importe2" },
+                        //{ "sName": "Importe3", "mData": "Importe3" },
+                        {
+                            "mDataProp": "IdAlumno",
+                            "bSortable": false,
+                            "sClass": "dt-center",
+                            "sWidth": "15%",
+                            "mRender": function (data, type, row) {
+                              
+                                return "<a href='#' onclick='Editar(" + data + ")' title='Editar'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></a>" +
+                                    "&nbsp;&nbsp;<a href='#' data-id=" + data + " onclick='Eliminar(" + data + ")' title='Eliminar'><i class='fa fa-times-circle fa-lg'></i></a>" +
+                                     "&nbsp;&nbsp;<a href='#' data-id=" + data + " onclick='generarTalon(" + data + ")' title='PF'><img src='../Images/cupones-pagofacil.png' alt='Pago'/></a>" +
+                                     "&nbsp;&nbsp;<a href='#' data-id=" + data + " onclick='Descargar(" + data + ")' title='Descargar'><i class='fa fa-download' aria-hidden='true'></i></a>" +
+                                     "&nbsp;&nbsp;<a href='#' data-id=" + data + " onclick='Enviar(" + data + ")' title='Enviar'><i class='fa fa-envelope' aria-hidden='true'></i></a>";
+                            }
+                        }
+                ],
+            });
+        });
+
+        function Editar(data) {
+
+            var id = data;
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetDataAlumnoForEdit", "Alumnos")",
+                data: "{'id': " + id + "}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (alumno) {
+
+                    if (alumno != null) {
+                        $('#IdAlumno').val(alumno.IdAlumno);
+                        $('#codigo').val(alumno.CodigoAlumno);
+                        $('#apellido').val(alumno.Apellido);
+                        $('#nombre').val(alumno.Nombre);
+                        $('#email').val(alumno.Mail);
+                        $('#observaciones').val(alumno.Observaciones);
+                        $('#condicion').val(alumno.Condicion);
+                        $('#telefono').val(alumno.Telefono);
+                        $('#importe1').val(alumno.Importe1);
+                        $('#importe2').val(alumno.Importe2);
+                        $('#importe3').val(alumno.Importe3);
+                        $('#btnSaveEdit').html('Actualizar');
+                        $('#modalAM').modal('show');
+                    }
+                    else {
+                        $(".notifi").notify("Error al obtener datos del alumno" + json, "error", { position: "bottom center" });
+                    }
+                },
+                error: function (json) {
+                    $(".notifi").notify("Error al procesar la modificación" + json, "error", { position: "bottom  center" });
+                }
+            });
+        }
+
+        function Descargar(data) {
+            var id = data;
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("DownloadPdf", "Alumnos")",
+                data: "{'id': " + id + "}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (pdfPath) {
+                    if (pdfPath != "notFound") {
+                        $('#DownloadFileModal').data('pdfPath', pdfPath).modal('show');
+                        $('#btnDowload').attr("href", "http://" + window.location.host + "/pdfs/repositorio/" + pdfPath);
+                    }
+                    else {
+                        $('#ErrorDownloadFileModal').modal('show');
+                    }
+                },
+                error: function (json) {
+                }
+            });
+        }
+
+        function Enviar(data) {
+            var id = data;
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("SendMail", "Alumnos")",
+                data: "{'id': " + id + "}",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (resul) {
+                if (resul == "Success") {
+
+                    $(".notifi").notify("Solicitud de pago enviada exitosamente!", "success");
+                   // $('#SendFileModal').data('pdfPath', pdfPath).modal('show');
+                   // $('#btnDowload').attr("href", "http://" + window.location.host + "/pdfs/repositorio/" + pdfPath);
+                }
+                else {
+                    $(".notifi").notify("Hubo un error al enviar el correo, intente nuevamente", "error");
+                }
+            },
+            error: function (json) {
+                $(".notifi").notify("Error al procesar los datos, intente en unos minutos.", "error");
+            }
+        });
+        }
+
+        $('#btnSaveEdit').click(function () {
+
+            //// You can get the form instance
+            var fv = $('#formAM').data('formValidation');
+            fv.validate();
+
+            if (fv.isValid()) {
+
+                Alumno = {
+                    IdALumno: $('#IdAlumno').val(),
+                    CodigoAlumno: $('#codigo').val(),
+                    Apellido: $('#apellido').val(),
+                    Nombre: $('#nombre').val(),
+                    Mail: $('#email').val(),
+                    Observaciones: $('#observaciones').val(),
+                    Condicion: $('#condicion').val(),
+                    Telefono: $('#telefono').val(),
+                    Importe1: $('#importe1').val().toString().replace(/\./g, ','),
+                    Importe2: $('#importe2').val().toString().replace(/\./g, ','),
+                    Importe3: $('#importe3').val().toString().replace(/\./g, ','),
+                };
+
+                if ($('#btnSaveEdit').html() == "Actualizar") {
+
+                    var dataToSend = JSON.stringify(Alumno);
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("EditarAlumno", "Alumnos")",
+                        data: dataToSend,
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (json) {
+                            if (json == "Success") {
+                                $('#modalAM').modal('hide');
+                                $(".notifi").notify("Alumno actualizado correctamente!", "success");
+
+                                //  alert("Se actualizo exitosamente");
+                                $('#listar').dataTable()._fnAjaxUpdate();
+                            }
+                            else {
+                                $(".notifi").notify("ERROR:" + json, "error", { position: "bottom  center" });
+                                //alert("ERROR: " + json);
+                            }
+                        },
+                        error: function (json) {
+                            $(".notifi").notify("Error al actualizar alumno" + json, "error", { position: "bottom  center" });
+                            //alert('Error al actualizar alumno' + json);
+                        }
+                    });
+
+                    $('#modalAM').modal('hide');
+                    $('#listar').dataTable()._fnAjaxUpdate();
+
+                }
+                if ($('#btnSaveEdit').html() == "Crear") {
+
+                    var dataToSend = JSON.stringify(Alumno);
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("AddAlumno", "Alumnos")",
+                        data: dataToSend,
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (json) {
+                            if (json == "Success") {
+                                $('#modalAM').modal('hide');
+                                $(".notifi").notify("Alumno creado correctamente!", "success", { position: "bottom  center" });
+                                // alert("Alumno creado exitosamente");
+                                $('#listar').dataTable()._fnAjaxUpdate();
+                            }
+                            else {
+                                $(".notifi").notify("ERROR:" + json, "error", { position: "bottom  center" });
+                                // alert("ERROR: " + json);
+                            }
+                        },
+                        error: function (json) {
+                            $(".notifi").notify("Error al crear el alumno" + json, "error", { position: "bottom  center" });
+                            //  alert('Error al actualizar alumno' + json);
+                        }
+                    });
+
+
+                    $('#modalAM').modal('hide');
+                    $('#listar').dataTable()._fnAjaxUpdate();
+                    $('#formAM').formValidation('resetForm', true);
+                }
+            }
+        });
+
+
+
+        //Alta Alumno
+        $('#btnAddAlumno').click(function () {
+            $('#modalAM').modal('show');
+            $('#btnSaveEdit').html('Crear');
+        });
+
+
+        function getFormattedDate(date) {
+            var year = date.getFullYear();
+            var month = (1 + date.getMonth()).toString();
+            month = month.length > 1 ? month : '0' + month;
+            var day = date.getDate().toString();
+            day = day.length > 1 ? day : '0' + day;
+            return day + '/' + month + '/' + year;
+        }
+
+        function generarTalon(data) {
+            var id = data;
+            var alumno;
+
+            var date = new Date();
+            date = getFormattedDate(date);
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetDataAlumnoForEdit", "Alumnos")",
+                data: "{'id': " + id + "}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (alumno) {
+
+                    if (alumno != null) {
+
+                        $('#importe1_pago').val(alumno.Importe1);
+                        $('#importe2_pago').val(alumno.Importe2);
+                        $('#importe3_pago').val(alumno.Importe3);
+                        $('#fecha1').val(date);
+                        $('#fecha2').val(date);
+                        $('#fecha3').val(date);
+
+                        $('#PagoModal').data('id', data).modal('show');
+                        $('#resultado').hide();
+                    }
+                    else {
+                        $(".notifi").notify("Error al obtener datos del alumno", "error", { position: "bottom  center" });
+                   
+                    }
+                },
+                error: function (json) {
+                    $(".notifi").notify("Error al procesar la modificación", "error", { position: "bottom  center" });
+                   
+                }
+            });
+
+        };
+
+        function Eliminar(data) {
+            var id = data;
+            $('#deleteModal').data('id', data).modal('show');
+        };
+
+        $('#btnYes').click(function () {
+            // handle deletion here
+            var id = $('#deleteModal').data('id');
+
+            $('[data-id=' + id + ']').closest("tr").remove();
+
+            //elimino
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("EliminarAlumnos", "Alumnos")",
+                data: "{'id': " + id + "}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (json) {
+                    if (json == "Success") {
+                        $('#deleteModal').modal('hide');
+                        $(".notifi").notify("Alumno dado de baja correctamente!", "success", { position: "bottom  center" });
+                        // alert("Se elimino exitosamente");
+                        $('#listar').dataTable()._fnAjaxUpdate();
+                    }
+                    else {
+                        $(".notifi").notify("Error al intentar la baja del alumno!", "error", { position: "bottom  center" });
+                        //alert("Error al eliminar");
+                    }
+                },
+                error: function (json) {
+                    // alert('Error al procesar la baja' + json);
+                    $(".notifi").notify("Error al intentar procesar la baja del alumno!", "error", { position: "bottom  center" });
+                }
+            });
+            $('#deleteModal').modal('hide');
+        });
+
+        $('#btnGenerarTalon').click(function () {
+
+            var fv = $('#formpago').data('formValidation');
+
+            $('#formpago').formValidation('revalidateField', 'importe1_pago');
+            $('#formpago').formValidation('revalidateField', 'importe2_pago');
+            $('#formpago').formValidation('revalidateField', 'importe3_pago');
+
+            fv.validate();
+
+            if (fv.isValid()) {
+
+                //trasformo fecha de improte 1 en formato juliano
+                var fechav1 = $('#fecha1').val();
+                var aniov1 = fechav1.toString().substring(8,10);               
+                var mesv1 = fechav1.toString().substring(3, 5);
+                var diav1 = fechav1.toString().substring(0, 2);
+
+                var diasjulianov1 = Math.floor((Date.parse(mesv1+"/"+diav1+"/"+aniov1) - Date.parse("01/01/" + aniov1)) / 86400000) + 1;
+                if (diasjulianov1 < 100) diasjulianov1 = "0" + diasjulianov1;
+                
+                var fechav1juliano = aniov1 + diasjulianov1;
+
+                //trasformo fecha de importe 2 en formato juliano
+                var fechav2 = $('#fecha2').val();
+                var aniov2 = fechav2.toString().substring(8, 10);               //anio
+                var mesv2 = fechav2.toString().substring(3, 5);
+                var diav2 = fechav2.toString().substring(0, 2);
+
+                var diasjulianov2 = Math.floor((Date.parse(mesv2 + "/" + diav2 + "/" + aniov2) - Date.parse("01/01/" + aniov2)) / 86400000) + 1;
+                if (diasjulianov2 < 100) diasjulianov2 = "0" + diasjulianov2;
+
+                var fechav2juliano = aniov2 + diasjulianov2;
+
+                //trasformo fecha del improte 3
+                var fechav3 = $('#fecha3').val();
+                var aniov3 = fechav3.toString().substring(8, 10);               //anio
+                var mesv3 = fechav3.toString().substring(3, 5);
+                var diav3 = fechav3.toString().substring(0, 2);
+
+                var diferenciaf3f2 = Math.floor((Date.parse(mesv3 + "/" + diav3 + "/" + aniov3) - Date.parse(mesv2 + "/" + diav2 + "/" + aniov2)) / 86400000);
+                if (diferenciaf3f2 < 10) diferenciaf3f2 = "0" + diferenciaf3f2;
+                if (diferenciaf3f2 > 99) diferenciaf3f2 = "99";
+
+                var id = $('#PagoModal').data('id');
+                Talon = {
+                    IdALumno: id,
+                    importe1: $('#importe1_pago').val(),
+                    importe2: $('#importe2_pago').val(),
+                    importe3: $('#importe3_pago').val(),
+                    fechaVenc1_customPF : fechav1juliano,
+                    fechaVenc2_customPF : fechav2juliano,
+                    fechaVenc3_customPF : diferenciaf3f2,
+                    fechaVenc1: $('#fecha1').val(),
+                    fechaVenc2: $('#fecha2').val(),
+                    fechaVenc3: $('#fecha3').val()
+
+                };
+
+                var dataToSend = JSON.stringify(Talon);
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("GenerarTalon", "Alumnos")",
+                    data: dataToSend,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (json) {
+                        if (json == "Success") {
+
+                            $(".notifi").notify("Talon de Pago generado exitosamente!", "success", { position: "bottom  center" });
+                        }
+                        else {
+                            alert("ERROR: " + json);
+                            $(".notifi").notify("Error" + json, "error", { position: "bottom  center" });
+                        }
+                    },
+                    error: function (json) {
+                        $(".notifi").notify("Error al procesar el talon", "error", { position: "bottom  center" });
+                    }
+                });
+
+                $('#PagoModal').modal('hide');
+            }
+        });
+
+    </script>
+}

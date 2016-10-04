@@ -1,0 +1,83 @@
+﻿
+@{
+    ViewBag.Title = "ManageUserRoles";
+}
+
+<h2>Manage User Roles</h2>
+@Html.ActionLink("Crear Rol", "Create") | @Html.ActionLink("Administrar Roles de usuario", "ManageUserRoles")
+<hr/>
+
+<h2>Asignacion de Roles a Usuarios</h2>
+
+@using (Html.BeginForm("RoleAddToUser", "Roles"))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <p>
+        Nombre: @Html.DropDownList("UserName", (IEnumerable<SelectListItem>)ViewBag.Users, "Seleccionar ...")
+       @*Username : @Html.TextBox("UserName")*@
+        Rol: @Html.DropDownList("RoleName", (IEnumerable <SelectListItem>) ViewBag.Roles, "Seleccionar ...")
+        <input type="submit" value="Asignar" />
+    </p>
+
+   
+}
+<hr/>
+<h3>Listar Roles de Usuario</h3>
+@using (Html.BeginForm("GetRoles", "Roles"))
+{
+    @Html.AntiForgeryToken()
+    <p>
+        Usuario : @Html.TextBox("UserName")
+        <input type="submit" value="Ver" />
+    </p>
+}
+
+@if (ViewBag.RolesForThisUser != null)
+{
+    <table class="table table-hover .table-bordered">
+        <thead>
+            <tr><th>Roles</th></tr>
+        </thead>
+        <tbody>
+            
+                @foreach (string s in ViewBag.RolesForThisUser)
+                {
+                    <tr class="success">
+                        <td>@s</td>
+                       
+                    </tr>
+                }
+        </tbody>
+    </table>
+
+
+    @*<div style="background-color:yellow;">
+        <h3>Roles for this user </h3>
+        <ol>
+            @foreach (string s in ViewBag.RolesForThisUser)
+            {
+                <li>@s</li>
+            }
+        </ol>
+    </div>*@
+}
+
+<hr />
+<h3>Eliminar Roles de usuario</h3>
+
+@using (Html.BeginForm("DeleteRoleForUser", "Roles"))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <p>
+        Usuario : @Html.TextBox("UserName")
+        Rol: @Html.DropDownList("RoleName", (IEnumerable<SelectListItem>)ViewBag.Roles, "Seleccionar...")
+        <input type="submit" value="Quitar Rol al usuario" />
+    </p>
+
+    
+}
+
