@@ -14,6 +14,7 @@ using iTextSharp.text;
 using System.Net.Mail;
 using System.Globalization;
 using System.Web.Helpers;
+using System.Text;
 
 namespace GAFER.Controllers
 {
@@ -272,15 +273,21 @@ namespace GAFER.Controllers
                 cb.ShowTextAligned(1, text, 520, 640, 0);
                 cb.EndText();
 
+                //bf = BaseFont.CreateFont(System.Configuration.ConfigurationManager.AppSettings["fontI2of5"], BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
                 bf = BaseFont.CreateFont(@"C:\Projects\AspMvcIdentity-master\GAFER\fonts\I25HRE__.TTF", BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
-                cb.SetColorFill(BaseColor.DARK_GRAY);
+
+                cb.SetColorFill(BaseColor.BLACK);
                 cb.SetFontAndSize(bf, 12);
 
 
                 cb.BeginText();
-                text = "123456789123456789";
+              
+                text = Helpers.I2of5.Interleaved25(talon.datosTalon.CodigoPagoFacil);
+
+                //test
+                //= Helpers.I2of5.Interleaved25("093702361750001619201653876317950016202184000075");
                 // put the alignment and coordinates here
-                cb.ShowTextAligned(1, text, 100, 200, 0);
+                cb.ShowTextAligned(Element.ALIGN_CENTER, text, 300, 500, 0);
                 cb.EndText();
 
                 // create the new page and add it to the pdf
@@ -748,6 +755,8 @@ namespace GAFER.Controllers
             }
             return Json("notFound", JsonRequestBehavior.AllowGet);
         }
+
+                   
 
        
     }
