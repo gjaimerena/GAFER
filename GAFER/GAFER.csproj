@@ -449,6 +449,8 @@
       <DependentUpon>GAFER.edmx</DependentUpon>
     </Content>
     <Content Include="fonts\code25I.ttf" />
+    <Content Include="pdfs\template\70007.pdf" />
+    <Content Include="pdfs\template\templateBase.docx" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.min.js" />

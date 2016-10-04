@@ -266,12 +266,29 @@ namespace GAFER.Controllers
                 cb.SetColorFill(BaseColor.DARK_GRAY);
                 cb.SetFontAndSize(bf, 8);
 
-                // write the text in the pdf content
+                //primer vencimiento
                 cb.BeginText();
-                string text = "Codigo Alumno: " + talon.datosTalon.Alumnos.CodigoAlumno;
+                string text = talon.fechaVenc1.ToString("dd/MM/yyyy") + "                   " + talon.Importe1;
                 // put the alignment and coordinates here
-                cb.ShowTextAligned(1, text, 520, 640, 0);
+                cb.ShowTextAligned(1, text, 420, 750, 0);
                 cb.EndText();
+                
+                //2do vencimiento
+                cb.BeginText();
+                text = talon.fechaVenc2.ToString("dd/MM/yyyy") + "                  " + talon.Importe2;
+                // put the alignment and coordinates here
+                cb.ShowTextAligned(1, text, 420, 740, 0);
+                cb.EndText();
+
+                //3er vencimiento
+                cb.BeginText();
+                text = talon.fechaVenc3.ToString("dd/MM/yyyy") + "                  " + talon.Importe3;
+                // put the alignment and coordinates here
+                cb.ShowTextAligned(1, text, 420, 730, 0);
+                cb.EndText();
+
+
+
 
                 //bf = BaseFont.CreateFont(System.Configuration.ConfigurationManager.AppSettings["fontI2of5"], BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
                 bf = BaseFont.CreateFont(@"C:\Projects\AspMvcIdentity-master\GAFER\fonts\I25HRE__.TTF", BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
@@ -287,7 +304,7 @@ namespace GAFER.Controllers
                 //test
                 //= Helpers.I2of5.Interleaved25("093702361750001619201653876317950016202184000075");
                 // put the alignment and coordinates here
-                cb.ShowTextAligned(Element.ALIGN_CENTER, text, 300, 500, 0);
+                cb.ShowTextAligned(Element.ALIGN_CENTER, text, 200, 450, 0);
                 cb.EndText();
 
                 // create the new page and add it to the pdf
