@@ -52,6 +52,10 @@
       <HintPath>..\packages\iTextSharp.5.5.9\lib\itextsharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -440,7 +444,6 @@
     <Content Include="Content\bootstrap-datepicker.standalone.css.map" />
     <Content Include="Content\bootstrap-datepicker.min.css.map" />
     <Content Include="Content\bootstrap-datepicker.css.map" />
-    <Content Include="pdfs\template\ordenpago.pdf" />
     <EntityDeploy Include="GAFER.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>GAFER.Designer.cs</LastGenOutput>
@@ -451,6 +454,9 @@
     <Content Include="fonts\code25I.ttf" />
     <Content Include="pdfs\template\70007.pdf" />
     <Content Include="pdfs\template\templateBase.docx" />
+    <Content Include="pdfs\repositorio\70007-1.pdf" />
+    <Content Include="Log4net.Config" />
+    <None Include="Properties\PublishProfiles\gaby.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.min.js" />
@@ -656,7 +662,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="pdfs\repositorio\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -678,6 +683,9 @@
     <EmbeddedResource Include="Migrations\201608191907197_Campos_User1.resx">
       <DependentUpon>201608191907197_Campos_User1.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

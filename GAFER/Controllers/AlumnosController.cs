@@ -20,6 +20,8 @@ namespace GAFER.Controllers
 {
     public class AlumnosController : Controller
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         private GAFEREntities db = new GAFEREntities();
 
         private static string codigoColegio = "";
@@ -243,9 +245,9 @@ namespace GAFER.Controllers
             {
 
                 string CodColegio = db.AspNetUsers.Where(m => m.UserName == User.Identity.Name).FirstOrDefault().CodigoColegio;
-                string templateFile = System.Configuration.ConfigurationManager.AppSettings["templates"] + "\\" + CodColegio + ".pdf"; 
+                string templateFile = Server.MapPath(System.Configuration.ConfigurationManager.AppSettings["templates"]) + "\\" + CodColegio + ".pdf"; 
                 //string oldFile = @"C:/Projects/AspMvcIdentity-master/GAFER/pdfs/template/ordenpago.pdf";
-                string newFile = System.Configuration.ConfigurationManager.AppSettings["repositorioTalones"] + "\\" + CodColegio + "-"+ talon.datosTalon.IdAlumno +".pdf";
+                string newFile = Server.MapPath(System.Configuration.ConfigurationManager.AppSettings["repositorioTalones"]) + "\\" + CodColegio + "-"+ talon.datosTalon.IdAlumno +".pdf";
 
                 // open the reader
                 PdfReader reader = new PdfReader(templateFile);
@@ -291,7 +293,7 @@ namespace GAFER.Controllers
 
 
                 //bf = BaseFont.CreateFont(System.Configuration.ConfigurationManager.AppSettings["fontI2of5"], BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
-                bf = BaseFont.CreateFont(@"C:\Projects\AspMvcIdentity-master\GAFER\fonts\I25HRE__.TTF", BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+                bf = BaseFont.CreateFont(Server.MapPath("~/fonts")+ "\\I25HRE__.TTF", BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
 
                 cb.SetColorFill(BaseColor.BLACK);
                 cb.SetFontAndSize(bf, 12);
@@ -322,7 +324,7 @@ namespace GAFER.Controllers
             catch (Exception ex)
             {
                 ViewBag.Message = "Error al generar el PDF, intente nuevamente";
-                System.Console.WriteLine(ex.Message);
+                log.Error("Error al generar PDF " + ex.Message);
                 return null;
             }
             
@@ -382,7 +384,7 @@ namespace GAFER.Controllers
 
             catch (Exception ex)
             {
-                Console.WriteLine("Exception is: " + ex.ToString());
+                log.Error("Error al enviar Mail: " + ex);
                 return Json("Error", JsonRequestBehavior.AllowGet);
                // ViewBag.message = "Hubo un error al enviar el correo, intente nuevamente";
             }
@@ -732,6 +734,11 @@ namespace GAFER.Controllers
 
                     string urlNewPdf = GenerarPDF(talonPF);
 
+                    if (urlNewPdf== null)
+                    {
+                        return Json("Error al generar Pdf", JsonRequestBehavior.AllowGet);
+                    }
+
                     return Json("Success", JsonRequestBehavior.AllowGet);
 
                 }
@@ -743,7 +750,7 @@ namespace GAFER.Controllers
             }
             catch (Exception ex)
             {
-
+                log.Error("Error al generar talon - " + ex.Message);
                 return Json("Error " + ex.Message, JsonRequestBehavior.AllowGet);
             }
         }
@@ -759,8 +766,10 @@ namespace GAFER.Controllers
 
             string repositorio = System.Configuration.ConfigurationManager.AppSettings["repositorioTalones"];
 
-            List<string> lstAllFileName = (from itemFile in Directory.GetFiles(repositorio, "*.pdf")
-                                           select Path.GetFileNameWithoutExtension(itemFile)).Cast<string>().ToList();
+
+            //List<string> lstAllFileName = (from itemFile in Directory.GetFiles(repositorio, "*.pdf")select Path.GetFileNameWithoutExtension(itemFile)).Cast<string>().ToList();
+            List<string> lstAllFileName = (from itemFile in Directory.GetFiles(Server.MapPath(repositorio), "*.pdf")select Path.GetFileNameWithoutExtension(itemFile)).Cast<string>().ToList();
+
             foreach (string dir in lstAllFileName)
             {
                 string nameFile = codigoColegio + "-" + id.ToString();
@@ -770,6 +779,8 @@ namespace GAFER.Controllers
                     return Json(pdfPath, JsonRequestBehavior.AllowGet);
                 }
             }
+
+            log.Error("Error al intenetar descargar el PDF");
             return Json("notFound", JsonRequestBehavior.AllowGet);
         }
 
