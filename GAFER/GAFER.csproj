@@ -209,6 +209,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\Mail.cs" />
     <Compile Include="Helpers\I2of5.cs" />
     <Compile Include="Historial.cs">
       <DependentUpon>GAFER.tt</DependentUpon>
@@ -421,6 +422,13 @@
     <Content Include="Content\Site.css" />
     <Content Include="Images\cupones-pagofacil.png" />
     <Content Include="Images\fondo.jpg" />
+    <Content Include="Images\GAFER-01.png" />
+    <Content Include="Images\Icons-Profil-user.png" />
+    <Content Include="Images\logo.png" />
+    <Content Include="Images\NuevoAlumnobtn.png" />
+    <Content Include="Images\passlogin.png" />
+    <Content Include="Images\Pruebas Gafer-09.png" />
+    <Content Include="Images\userlogin.png" />
     <Content Include="lib\jquery.fileDownload.js" />
     <Content Include="Pagos.edmx.sql" />
     <Content Include="Scripts\bootstrap-datepicker.js" />

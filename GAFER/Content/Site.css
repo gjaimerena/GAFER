@@ -1,5 +1,5 @@
 ﻿body {
-    padding-top: 50px;
+    padding-top: 150px;
     padding-bottom: 20px;
    /*   background-image: url('../Images/fondo.jpg');*/
     /* Location of the image */
@@ -25,6 +25,51 @@
 
    background-color: rgba(176, 176, 176, 0.12)
    
+}
+
+.modal-header {
+  
+  background-color: #12A19A;
+}
+
+.modal-footer{
+  
+  background-color: #EAEAEA;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+  color: #08847E;
+}
+
+.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
+    z-index: 2;
+    color: #ffffff;
+    cursor: default;
+    background-color: #12A19A;
+    border-color: #08847E;
+}
+
+a{
+    color: #0D7C77;
+}
+
+a:hover, a:focus {
+  color: #94CAB6;
+  text-decoration: underline;
+}
+
+.btn-site{
+    color: #ffffff;
+  background-color: #12A19A;
+  border-color: #08847E;
+}
+a.logo
+{
+    background: url(../Images/image.gif) no-repeat top left;
+     display: block;
+     width: 150px;
+     height: 150px;
+     text-indent: -9999px; /* hides the link text */
 }
 
 /* Set padding to keep content from hitting the edges */

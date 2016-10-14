@@ -17,13 +17,21 @@
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
+                    <span class="icon-bar">@Html.ActionLink("ALUMNOS", "Index", "Alumnos")</span>
+                    <span class="icon-bar">@Html.ActionLink("CONTACTO", "Contact", "Home")</span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("GAFER", "Index", "Home", null, new { @class = "navbar-brand" })
+                
+                    <a class="" href="@Url.Action("Index", "Home" )">
+
+                        <img src="~/Images/GAFER-01.png" style="width: 30%;" />
+                        @*<img src="~/Images/logo.png" />*@
+                    </a>
+                  
+                
+                @*@Html.ActionLink("GAFER", "Index", "Home", null, new { @class = "navbar-brand" })*@
             </div>
-            <div class="navbar-collapse collapse">
+            <div class="navbar-collapse collapse" style="font-weight:bold;">
                 <ul class="nav navbar-nav">
                     @*<li>@Html.ActionLink("Home", "Index", "Home")</li>*@
                     
@@ -41,6 +49,26 @@
             </div>
         </div>
     </div>
+    }
+    else
+    {
+        <div class="navbar navbar-inverse navbar-fixed-top" style="background: linear-gradient(to right, #F9F9F9 , #AFDACA);">
+            <div class="container">
+                <div class="navbar-header">
+                   
+
+                    <a class="navbar-brand" href="@Url.Action("Index", "Home" )">
+
+                        <img src="~/Images/GAFER-01.png" style="width: 30%;" />
+
+                    </a>
+
+
+                    @*@Html.ActionLink("GAFER", "Index", "Home", null, new { @class = "navbar-brand" })*@
+                </div>
+               
+            </div>
+        </div>
     }
     <div class="container body-content">
         <p><div class="alert">@ViewBag.ResultMessage</div></p>

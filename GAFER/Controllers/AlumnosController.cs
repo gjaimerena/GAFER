@@ -15,6 +15,7 @@ using System.Net.Mail;
 using System.Globalization;
 using System.Web.Helpers;
 using System.Text;
+using GAFER.Helpers;
 
 namespace GAFER.Controllers
 {
@@ -352,44 +353,66 @@ namespace GAFER.Controllers
 
         public ActionResult SendMail(int id)
         {
+            Alumnos alumno = db.Alumnos.Where(m => m.IdAlumno == id).FirstOrDefault();
 
-            try
+
+            //creamos nuestra lista de archivos a enviar
+            List<string> lstArchivos = new List<string>();
+            //lstArchivos.Add("c:/archivo1.txt");
+            //lstArchivos.Add("c:/archivo2.txt");
+
+            //creamos nuestro objeto de la clase que hicimos
+            Mail oMail = new Mail(alumno.Mail, "GAFER - Emision de Pago Fácil", "GAFER - Emision de Pago Fácil", lstArchivos);
+
+            //y enviamos
+            if (oMail.enviaMail())
             {
-                Alumnos alumno = db.Alumnos.Where(m => m.IdAlumno == id).FirstOrDefault();
-
-
-                SmtpClient client = new SmtpClient("smtp.gmail.com", 587);
-
-                client.EnableSsl = true;
-
-                MailAddress from = new MailAddress("gabrieljaimerena@gmail.com", "GAFER - Emision de Pago Fácil");
-
-                MailAddress to = new MailAddress(alumno.Mail, alumno.Apellido + " " + alumno.Nombre);
-
-                MailMessage message = new MailMessage(from, to);
-
-                message.Body = "This is a test e-mail message sent using gmail as a relay server ";
-
-                string user = db.AspNetUsers.Where(m => m.CodigoColegio == codigoColegio).FirstOrDefault().UserName;
-                message.Subject = "Nueva solicitud de pago emitida por " + user;
-
-                NetworkCredential myCreds = new NetworkCredential("gabrieljaimerena@gmail.com", "“CHICOtazo1541", "");
-
-                client.Credentials = myCreds;
-                client.Send(message);
-
                 return Json("Success", JsonRequestBehavior.AllowGet);
-               // ViewBag.message = "El correo se envio exitosamente";
-            }
 
-            catch (Exception ex)
+            }
+            else
             {
-                log.Error("Error al enviar Mail: " + ex);
+                log.Error("Error al enviar Mail: " + oMail.error);
                 return Json("Error", JsonRequestBehavior.AllowGet);
-               // ViewBag.message = "Hubo un error al enviar el correo, intente nuevamente";
-            }
 
-           
+            }
+            //try
+            //{
+            //    Alumnos alumno = db.Alumnos.Where(m => m.IdAlumno == id).FirstOrDefault();
+
+
+            //    SmtpClient client = new SmtpClient("smtp.gmail.com", 587);
+
+            //    client.EnableSsl = true;
+
+            //    MailAddress from = new MailAddress("gabrieljaimerena@gmail.com", "GAFER - Emision de Pago Fácil");
+
+            //    MailAddress to = new MailAddress(alumno.Mail, alumno.Apellido + " " + alumno.Nombre);
+
+            //    MailMessage message = new MailMessage(from, to);
+
+            //    message.Body = "This is a test e-mail message sent using gmail as a relay server ";
+
+            //    string user = db.AspNetUsers.Where(m => m.CodigoColegio == codigoColegio).FirstOrDefault().UserName;
+            //    message.Subject = "Nueva solicitud de pago emitida por " + user;
+
+            //    NetworkCredential myCreds = new NetworkCredential("gabrieljaimerena@gmail.com", "“CHICOtazo1541", "");
+
+            //    client.Credentials = myCreds;
+            //    client.Send(message);
+
+            //    return Json("Success", JsonRequestBehavior.AllowGet);
+            //   // ViewBag.message = "El correo se envio exitosamente";
+            //}
+
+            //catch (Exception ex)
+            //{
+            //    log.Error("Error al enviar Mail: " + ex);
+            //    return Json("Error", JsonRequestBehavior.AllowGet);
+            //   // ViewBag.message = "Hubo un error al enviar el correo, intente nuevamente";
+            //}
+
+
 
         }
     

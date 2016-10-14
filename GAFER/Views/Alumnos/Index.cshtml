@@ -17,8 +17,9 @@
 </div>*@
 
 <div class="row">
-    <div class="col-sm-4"><button type="button" id="btnAddAlumno" class="btn btn-primary">Nuevo Alumno</button></div>
+    <div class="col-sm-4"><button type="button" id="btnAddAlumno" class="btn btn-site">Nuevo Alumno</button></div>
     <div class="col-sm-4 notifi"></div>
+  
 </div>
 <hr />
 @*@Html.ActionLink("Nuevo Alumno ", "Create", null, new { @class = "btn btn-primary" })*@
@@ -47,7 +48,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Telefono)
             </th>
-            <th>
+            <th width="200px;">
                 OPCIONES
             </th>
         </tr>
@@ -62,7 +63,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Editar Alumno</h4>
+                <h4 class="modal-title" style="color:white;">EDICION DE DATOS DEL ALUMNO</h4>
             </div>
             <div class="modal-body">
                 <form id="formAM" class="form-horizontal" role="form">
@@ -137,12 +138,13 @@
 
                     <input type="text" class="form-control" id="IdAlumno" style="visibility:hidden" />
                     <!-- Modal Footer -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
-                        <button type="button" id="btnSaveEdit" class="btn btn-primary">Actualizar</button>
-
-                    </div>
+                    
                 </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-site" data-dismiss="modal">Cerrar</button>
+                <button type="button" id="btnSaveEdit" class="btn btn-site">Actualizar</button>
 
             </div>
         </div>
@@ -154,7 +156,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <a href="#" data-dismiss="modal" aria-hidden="true" class="close">×</a>
-                <h3>Generar Talon de Pago </h3>
+                <h4 style="color:white;">Generar Talon de Pago </h4>
             </div>
             <div class="modal-body">
                 <form id="formpago" class="form-horizontal" role="form">
@@ -239,8 +241,8 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <a href="#" data-dismiss="modal" aria-hidden="true" class="close">×</a>
-                <h3>Borrar alumno</h3>
+                <a href="#" data-dismiss="modal" aria-hidden="true" class="close">X</a>
+                <h4 style="color:white;">ELIMINAR ALUMNO</h4>
             </div>
             <div class="modal-body">
                 Eliminaras el alumno.
@@ -248,7 +250,7 @@
             </div>
             <div class="modal-footer">
                 <a href="#" id="btnYes" class="btn btn-danger">Eliminar</a>
-                <a href="#" data-dismiss="modal" aria-hidden="true" class="btn btn-primary">Cancelar</a>
+                <a href="#" data-dismiss="modal" aria-hidden="true" class="btn btn-site">Cancelar</a>
             </div>
         </div>
     </div>
@@ -259,14 +261,14 @@
         <div class="modal-content">
             <div class="modal-header">
                 <a href="#" data-dismiss="modal" aria-hidden="true" class="close">×</a>
-                <h3>Descargar Talon</h3>
+                <h4 style="color:white;">Descarga de Talon</h4>
             </div>
             <div class="modal-body">
                 Se descargará el último talon de pago generado
             </div>
             <div class="modal-footer">
-                <a href="#" id="btnDowload" class="btn btn-danger" download="">Descargar</a>
-                <a href="#" data-dismiss="modal" aria-hidden="true" class="btn btn-primary">Cancelar</a>
+                <a href="#" id="btnDowload" class="btn btn-site" download="">Descargar</a>
+                <a href="#" data-dismiss="modal" aria-hidden="true" class="btn btn-site">Cancelar</a>
             </div>
         </div>
     </div>
@@ -277,14 +279,14 @@
         <div class="modal-content">
             <div class="modal-header">
                 <a href="#" data-dismiss="modal" aria-hidden="true" class="close">×</a>
-                <h3>Descargar Talon</h3>
+                <h4 style="color:white;">Descarga de Talon</h4>
             </div>
             <div class="modal-body">
                 No existen talon generados para dicho alumno, genere el talon y vuelva a intentarlo.
             </div>
             <div class="modal-footer">
 
-                <a href="#" data-dismiss="modal" aria-hidden="true" class="btn btn-danger">Cancelar</a>
+                <a href="#" data-dismiss="modal" aria-hidden="true" class="btn btn-site">Cancelar</a>
             </div>
         </div>
     </div>
@@ -658,14 +660,14 @@
                             "mDataProp": "IdAlumno",
                             "bSortable": false,
                             "sClass": "dt-center",
-                            "sWidth": "15%",
+                            "sWidth": "20%",
                             "mRender": function (data, type, row) {
                               
-                                return "<a href='#' onclick='Editar(" + data + ")' title='Editar'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></a>" +
-                                    "&nbsp;&nbsp;<a href='#' data-id=" + data + " onclick='Eliminar(" + data + ")' title='Eliminar'><i class='fa fa-times-circle fa-lg'></i></a>" +
-                                     "&nbsp;&nbsp;<a href='#' data-id=" + data + " onclick='generarTalon(" + data + ")' title='PF'><img src='../Images/cupones-pagofacil.png' alt='Pago'/></a>" +
-                                     "&nbsp;&nbsp;<a href='#' data-id=" + data + " onclick='Descargar(" + data + ")' title='Descargar'><i class='fa fa-download' aria-hidden='true'></i></a>" +
-                                     "&nbsp;&nbsp;<a href='#' data-id=" + data + " onclick='Enviar(" + data + ")' title='Enviar'><i class='fa fa-envelope' aria-hidden='true'></i></a>";
+                                return "<a href='#' onclick='Editar(" + data + ")' title='Editar Alumno'><i class='fa fa-pencil-square-o fa-2x' aria-hidden='true'></i></a>" +
+                                    "&nbsp;&nbsp;<a href='#' data-id=" + data + " onclick='Eliminar(" + data + ")' title='Eliminar Alumno'><i class='fa fa-trash-o fa-2x'></i></a>" +
+                                     "&nbsp;&nbsp;<a href='#' data-id=" + data + " onclick='generarTalon(" + data + ")' title='Generar Talon de Pago'><i class='fa fa-wpforms fa-2x'></i></a>" +
+                                     "&nbsp;&nbsp;<a href='#' data-id=" + data + " onclick='Descargar(" + data + ")' title='Descargar Talon'><i class='fa fa-download fa-2x' aria-hidden='true'></i></a>" +
+                                     "&nbsp;&nbsp;<a href='#' data-id=" + data + " onclick='Enviar(" + data + ")' title='Enviar'><i class='fa fa-envelope fa-2x' aria-hidden='true'></i></a>";
                             }
                         }
                 ],
