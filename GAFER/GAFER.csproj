@@ -464,6 +464,16 @@
     <Content Include="pdfs\template\templateBase.docx" />
     <Content Include="pdfs\repositorio\70007-1.pdf" />
     <Content Include="Log4net.Config" />
+    <Content Include="fonts\arial.ttf" />
+    <Content Include="fonts\arialbd.ttf" />
+    <Content Include="fonts\arialbi.ttf" />
+    <Content Include="fonts\ariali.ttf" />
+    <Content Include="fonts\ARIALN.TTF" />
+    <Content Include="fonts\ARIALNB.TTF" />
+    <Content Include="fonts\ARIALNBI.TTF" />
+    <Content Include="fonts\ARIALNI.TTF" />
+    <Content Include="fonts\ariblk.ttf" />
+    <Content Include="DB_GAFER.bak" />
     <None Include="Properties\PublishProfiles\gaby.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.js" />
@@ -632,7 +642,9 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>

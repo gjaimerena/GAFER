@@ -19,6 +19,7 @@ namespace GAFER
         public int IdAlumno { get; set; }
         public Nullable<System.DateTime> FechaEmision { get; set; }
         public string CodigoPagoFacil { get; set; }
+        public string Concepto { get; set; }
     
         public virtual Alumnos Alumnos { get; set; }
         public virtual AspNetUsers AspNetUsers { get; set; }

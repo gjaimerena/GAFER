@@ -8,6 +8,7 @@ namespace GAFER.Models
     public class Talon
     {
         public int idAlumno { get; set; }
+        public string concepto { get; set; }
         public string importe1 { get; set; }
         public string importe2 { get; set; }
         public string importe3 { get; set; }

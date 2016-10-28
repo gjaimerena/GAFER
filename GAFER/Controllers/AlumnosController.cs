@@ -265,41 +265,134 @@ namespace GAFER.Controllers
                 PdfContentByte cb = writer.DirectContent;
 
                 // select the font properties
-                BaseFont bf = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+                string pathFontArial = System.Configuration.ConfigurationManager.AppSettings["fontArial"];
+                BaseFont bf = BaseFont.CreateFont(Server.MapPath(pathFontArial), BaseFont.CP1252, BaseFont.EMBEDDED);
                 cb.SetColorFill(BaseColor.DARK_GRAY);
-                cb.SetFontAndSize(bf, 8);
+                cb.SetFontAndSize(bf, 11);
 
-                //primer vencimiento
+                //alumno Nombre
                 cb.BeginText();
-                string text = talon.fechaVenc1.ToString("dd/MM/yyyy") + "                   " + talon.Importe1;
+                int posX = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["alumnoX"]);
+                int posY = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["alumnoY"]);
+
+                string text = talon.datosTalon.Alumnos.Apellido.ToUpper() + " " + talon.datosTalon.Alumnos.Nombre;
                 // put the alignment and coordinates here
-                cb.ShowTextAligned(1, text, 420, 750, 0);
+                cb.ShowTextAligned(1, text, posX, posY, 0);
                 cb.EndText();
+
+
+                //alumno legajo
+                cb.BeginText();
+                posX = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["legajoAlumnoX"]);
+                posY = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["legajoAlumnoY"]);
+
+                text = talon.datosTalon.Alumnos.CodigoAlumno;
+                // put the alignment and coordinates here
+                cb.ShowTextAligned(1, text, posX, posY, 0);
+                cb.EndText();
+
+                //Nº talon - usa el nro de historial
+                cb.BeginText();
+                posX = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["nroX"]);
+                posY = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["nroY"]);
+
+                text = talon.datosTalon.Concepto;
+                // put the alignment and coordinates here
+                cb.ShowTextAligned(1, talon.datosTalon.IdHistorial.ToString(), posX, posY, 0);
+                cb.EndText();
+
+
+                //fecha Emision
+                cb.BeginText();
+                posX = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["fechaX"]);
+                posY = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["fechaY"]);
+
+                //text = talon.datosTalon.Concepto;
+                // put the alignment and coordinates here
+                cb.ShowTextAligned(1, talon.datosTalon.FechaEmision.Value.ToString("dd/MM/yyyy"), posX, posY, 0);
+                cb.EndText();
+
+                //Concepto
+                cb.BeginText();
+                posX = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["conceptoX"]);
+                posY = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["conceptoY"]);
+
+                text = talon.datosTalon.Concepto;
+                // put the alignment and coordinates here
+                cb.ShowTextAligned(1, text, posX, posY, 0);
+                cb.EndText();
+
+                cb.BeginText();
+                text = talon.fechaVenc1.ToString("dd/MM/yyyy");
+                posX = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["1VenPosX"]);
+                posY = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["1VenPosY"]);
+                // put the alignment and coordinates here
+                cb.ShowTextAligned(1, text, posX, posY, 0);
+                cb.EndText();
+
+                //importe 1er venc
+                cb.BeginText();
+                text = talon.Importe1.ToString("#,##0.00");
+                posX = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["1ImpPosX"]);
+                posY = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["1ImpPosY"]);
+                // put the alignment and coordinates here
+                cb.ShowTextAligned(1, text, posX, posY, 0);
+                cb.EndText();
+
+
+                if (talon.datosTalon.AspNetUsers.CantidadVencimientos > 1)
+                {
+
+                    //2do vencimiento
+                    cb.BeginText();
+                    text = talon.fechaVenc2.ToString("dd/MM/yyyy");
+                    posX = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["2VenPosX"]);
+                    posY = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["2VenPosY"]);
+                    // put the alignment and coordinates here
+                    cb.ShowTextAligned(1, text, posX, posY, 0);
+                    cb.EndText();
+
+                    //2do vencimiento
+                    cb.BeginText();
+                    text = talon.Importe2.ToString("#,##0.00");
+                    posX = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["2ImpPosX"]);
+                    posY = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["2ImpPosY"]);
+                    // put the alignment and coordinates here
+                    cb.ShowTextAligned(1, text, posX, posY, 0);
+                    cb.EndText();
+
+                }
+
+                if (talon.datosTalon.AspNetUsers.CantidadVencimientos > 2)
+                {
+                    //3er vencimiento
+                    cb.BeginText();
+                    text = talon.fechaVenc3.ToString("dd/MM/yyyy");
+                    posX = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["3VenPosX"]);
+                    posY = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["3VenPosY"]);
+                    // put the alignment and coordinates here
+                    cb.ShowTextAligned(1, text, posX, posY, 0);
+                    cb.EndText();
+
+                    //3er vencimiento
+                    cb.BeginText();
+                    text = talon.Importe3.ToString("#,##0.00");
+                    posX = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["3ImpPosX"]);
+                    posY = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["3ImpPosY"]);
+                    // put the alignment and coordinates here
+                    cb.ShowTextAligned(1, text, posX, posY, 0);
+                    cb.EndText();
+                }
+
                 
-                //2do vencimiento
-                cb.BeginText();
-                text = talon.fechaVenc2.ToString("dd/MM/yyyy") + "                  " + talon.Importe2;
-                // put the alignment and coordinates here
-                cb.ShowTextAligned(1, text, 420, 740, 0);
-                cb.EndText();
 
-                //3er vencimiento
-                cb.BeginText();
-                text = talon.fechaVenc3.ToString("dd/MM/yyyy") + "                  " + talon.Importe3;
-                // put the alignment and coordinates here
-                cb.ShowTextAligned(1, text, 420, 730, 0);
-                cb.EndText();
-
-
-
-
+                //CODIGO DE BARRA   
+                string pathFontI25 = System.Configuration.ConfigurationManager.AppSettings["fontI25"];
                 //bf = BaseFont.CreateFont(System.Configuration.ConfigurationManager.AppSettings["fontI2of5"], BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
-                bf = BaseFont.CreateFont(Server.MapPath("~/fonts")+ "\\I25HRE__.TTF", BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
-
-                cb.SetColorFill(BaseColor.BLACK);
-                cb.SetFontAndSize(bf, 12);
-
-
+                bf = BaseFont.CreateFont(Server.MapPath(pathFontI25), BaseFont.CP1252, BaseFont.EMBEDDED);
+                                cb.SetColorFill(BaseColor.BLACK);
+                cb.SetFontAndSize(bf, 13);
+                
                 cb.BeginText();
               
                 text = Helpers.I2of5.Interleaved25(talon.datosTalon.CodigoPagoFacil);
@@ -307,7 +400,9 @@ namespace GAFER.Controllers
                 //test
                 //= Helpers.I2of5.Interleaved25("093702361750001619201653876317950016202184000075");
                 // put the alignment and coordinates here
-                cb.ShowTextAligned(Element.ALIGN_CENTER, text, 200, 450, 0);
+                posX = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["posCodigoX"]);
+                posY = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["posCodigoY"]);
+                cb.ShowTextAligned(Element.ALIGN_CENTER, text, posX, posY, 0);
                 cb.EndText();
 
                 // create the new page and add it to the pdf
@@ -729,8 +824,7 @@ namespace GAFER.Controllers
                         datosTalon = new Historial
                         {
                             AspNetUsers = colegio,
-                            
-
+                            Concepto = talon.concepto,
                             Alumnos = alum,
                             CodigoPagoFacil = codigoBarra,
                             FechaEmision = DateTime.Now,
@@ -739,9 +833,9 @@ namespace GAFER.Controllers
 
 
                         },
-                        Importe1 = Convert.ToDecimal(talon.importe1),
-                        Importe2 = Convert.ToDecimal(talon.importe2),
-                        Importe3 = Convert.ToDecimal(talon.importe3),
+                        Importe1 = Decimal.Round(Convert.ToDecimal(talon.importe1.Replace(".", ",")),2,MidpointRounding.AwayFromZero),
+                        Importe2 = Decimal.Round(Convert.ToDecimal(talon.importe2.Replace(".", ",")), 2, MidpointRounding.AwayFromZero),
+                        Importe3 = Decimal.Round(Convert.ToDecimal(talon.importe3.Replace(".", ",")), 2, MidpointRounding.AwayFromZero),
                         fechaVenc1 = DateTime.ParseExact(talon.fechaVenc1, "dd/MM/yyyy", CultureInfo.InvariantCulture), //talon.fechaVenc1,
                         fechaVenc2 = DateTime.ParseExact(talon.fechaVenc2, "dd/MM/yyyy", CultureInfo.InvariantCulture),//talon.fechaVenc2,
                         fechaVenc3 = DateTime.ParseExact(talon.fechaVenc3, "dd/MM/yyyy", CultureInfo.InvariantCulture)//talon.fechaVenc3,

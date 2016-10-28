@@ -160,7 +160,13 @@
             </div>
             <div class="modal-body">
                 <form id="formpago" class="form-horizontal" role="form">
-
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label"
+                               for="concepto">Concepto</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="concepto" name="concepto" />
+                        </div>
+                    </div>
 
                     <div class="form-group" style="@ViewBag.importe1_div">
                         <label class="col-sm-4 control-label"
@@ -504,6 +510,13 @@
                     excluded: [':disabled', ':hidden', ':not(:visible)'],
                     //excluded: ':disabled', //requerido si usamos form en modal
                     fields: {
+                        concepto: {
+                            validators: {
+                                //notEmpty: {
+                                //    message: 'El campor es requerido'
+                                //}
+                            }
+                        },
                         importe1_pago: {
                             validators: {
                                 notEmpty: {
@@ -957,6 +970,7 @@
 
             if (fv.isValid()) {
 
+                //var concepto = $('#concepto').val();
                 //trasformo fecha de improte 1 en formato juliano
                 var fechav1 = $('#fecha1').val();
                 var aniov1 = fechav1.toString().substring(8,10);               
@@ -992,6 +1006,7 @@
                 var id = $('#PagoModal').data('id');
                 Talon = {
                     IdALumno: id,
+                    concepto: $('#concepto').val(),
                     importe1: $('#importe1_pago').val(),
                     importe2: $('#importe2_pago').val(),
                     importe3: $('#importe3_pago').val(),
