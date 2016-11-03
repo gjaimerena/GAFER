@@ -60,14 +60,57 @@ namespace GAFER.Models
         [Display(Name = "Codigo Colegio")]
         public string CodigoColegio { get; set; }
 
+        
+        [StringLength(50, ErrorMessage = "el {0} debe contener al menos {2} caracteres.", MinimumLength = 1)]
+        [Display(Name = "Discriminator")]
+        public string Discriminator { get; set; }
+
         [Required]
-       
         [Display(Name = "Cantidad Vencimientos")]
         public int CantidadVencimientos { get; set; }
+
+        //[Required]
+        //[Display(Name = "Cantidad Vencimientos")]
+        //public int CondicionIVA { get; set; }
+
+        [Required]
+        [StringLength(40, ErrorMessage = "el {0} debe contener al menos {2} caracteres.", MinimumLength = 1)]
+        [Display(Name = "Denominacion")]
+        public string Denominacion { get; set; }
+
+        
+        [StringLength(50, ErrorMessage = "el {0} debe contener al menos {2} caracteres.", MinimumLength = 1)]
+        [Display(Name = "CUIT")]
+        public string CUIT { get; set; }
+
+        
+        [StringLength(50, ErrorMessage = "el {0} debe contener al menos {2} caracteres.", MinimumLength = 1)]
+        [Display(Name = "Contacto")]
+        public string Contacto { get; set; }
+
+        
+        [StringLength(50, ErrorMessage = "el {0} debe contener al menos {2} caracteres.", MinimumLength = 1)]
+        [Display(Name = "Direccion")]
+        public string Direccion { get; set; }
+
+       
+        [StringLength(50, ErrorMessage = "el {0} debe contener al menos {2} caracteres.", MinimumLength = 1)]
+        [Display(Name = "Observaciones")]
+        public string Observaciones { get; set; }
+
+        [Required]
+        [DataType(DataType.EmailAddress)]
+        [Display(Name = "Mail")]
+        public string Mail { get; set; }
+
 
         [DataType(DataType.Password)]
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "Las contraseñas ingresadas no coinciden.")]
         public string ConfirmPassword { get; set; }
+
+
+
+      
     }
 }

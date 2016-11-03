@@ -13,7 +13,7 @@ using System.Web.Security;
 
 namespace GAFER.Controllers
 {
-   
+   // [AuthorizeOrRedirect(Roles = "Administrador")]
     public class AccountController : Controller
     {
         public AccountController()
@@ -122,7 +122,8 @@ namespace GAFER.Controllers
 
         //
         // GET: /Account/Register
-        [AllowAnonymous]
+        //  [AllowAnonymous]
+        [AuthorizeOrRedirect(Roles = "Administrador")]
         public ActionResult Register()
         {
             List<SelectListItem> cantVencimientos = new List<SelectListItem>();
@@ -139,7 +140,8 @@ namespace GAFER.Controllers
         //
         // POST: /Account/Register
         [HttpPost]
-        [AllowAnonymous]
+        [AuthorizeOrRedirect(Roles = "Administrador")]
+        // [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
@@ -170,7 +172,7 @@ namespace GAFER.Controllers
                     if (result.Succeeded)
                     {
                         await SignInAsync(user, isPersistent: false);
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Index", "Alumnos");
                     }
                     else
                     {
@@ -475,7 +477,7 @@ namespace GAFER.Controllers
             }
             else
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Alumnos");
             }
         }
 

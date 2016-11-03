@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace GAFER.Helpers
         string To;  //a quien vamos a enviar el mail
         string Message;  //mensaje
         string Subject; //asunto
-        List<string> Archivo = new List<string>(); //lista de archivos a enviar
+        string Archivo; //lista de archivos a enviar
 
      
 
@@ -36,13 +37,13 @@ namespace GAFER.Helpers
         /// <param name="Mensaje">Mensaje del mail</param>
         /// <param name="Asunto">Asunto del mail</param>
         /// <param name="ArchivoPedido_">Archivo a adjuntar, no es obligatorio</param>
-        public Mail(string Para, string Mensaje, string Asunto, List<string> ArchivoPedido_ = null)
+        public Mail(string Para, string Mensaje, string Asunto, string talon = null)
         {
            // From = FROM;
             To = Para;
             Message = Mensaje;
             Subject = Asunto;
-            Archivo = ArchivoPedido_;
+            Archivo = talon;
 
         }
 
@@ -69,20 +70,24 @@ namespace GAFER.Helpers
                 //la direccion de procedencia, el asunto y el mensaje
                 Email = new System.Net.Mail.MailMessage(DE, To, Subject, Message);
 
+
+                if (System.IO.File.Exists(@Archivo))
+                    Email.Attachments.Add(new Attachment(@Archivo));
                 //si viene archivo a adjuntar
                 //realizamos un recorrido por todos los adjuntos enviados en la lista
                 //la lista se llena con direcciones fisicas, por ejemplo: c:/pato.txt
-                if (Archivo != null)
-                {
-                    //agregado de archivo
-                    foreach (string archivo in Archivo)
-                    {
-                        //comprobamos si existe el archivo y lo agregamos a los adjuntos
-                        if (System.IO.File.Exists(@archivo))
-                            Email.Attachments.Add(new Attachment(@archivo));
 
-                    }
-                }
+                //if (Archivo != null)
+                //{
+                //    //agregado de archivo
+                //    foreach (string archivo in Archivo)
+                //    {
+                //        //comprobamos si existe el archivo y lo agregamos a los adjuntos
+                //        if (System.IO.File.Exists(@archivo))
+                //            Email.Attachments.Add(new Attachment(@archivo));
+
+                //    }
+                //}
 
                 Email.IsBodyHtml = true; //definimos si el contenido sera html
                 Email.From = new MailAddress(DE); //definimos la direccion de procedencia
@@ -114,7 +119,7 @@ namespace GAFER.Helpers
                 return false;
             }
 
-            return false;
+
 
         }
     }

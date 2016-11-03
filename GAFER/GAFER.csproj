@@ -475,6 +475,8 @@
     <Content Include="fonts\ariblk.ttf" />
     <Content Include="DB_GAFER.bak" />
     <None Include="Properties\PublishProfiles\gaby.pubxml" />
+    <None Include="Properties\PublishProfiles\site.pubxml" />
+    <None Include="Properties\PublishProfiles\SmartNet.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.min.js" />
@@ -679,6 +681,7 @@
     <Content Include="Views\Alumnos\Index.cshtml" />
     <Content Include="Views\Alumnos\Index - Copy.cshtml" />
     <Content Include="Views\Error\Unauthorized.cshtml" />
+    <Content Include="web.config_prod.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -22,10 +22,8 @@ namespace GAFER.Controllers
     public class AlumnosController : Controller
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         private GAFEREntities db = new GAFEREntities();
-
-        private static string codigoColegio = "";
+       
 
         // GET: Alumnos
         public ActionResult Index()
@@ -34,14 +32,26 @@ namespace GAFER.Controllers
             //var alumnos = db.Alumnos.Include(a => a.AspNetUsers);
             //alumnos = alumnos.Where(m => m.IdColegio == IdColegio);
             //return View(alumnos.ToList());
+
+            
             if (!User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Login", "Account");
             }
 
-            AspNetUsers user = db.AspNetUsers.Where(m => m.UserName == User.Identity.Name).FirstOrDefault();
-            int? cantVencimientos = user.CantidadVencimientos;
-            codigoColegio = user.CodigoColegio;
+            
+
+            if (Session["codigoColegio"] == null || Session["cantVencimientos"]==null || Session["idColegio"]== null)
+            {
+                AspNetUsers user = db.AspNetUsers.Where(m => m.UserName == User.Identity.Name).FirstOrDefault();
+                Session["cantVencimientos"] = user.CantidadVencimientos;
+                Session["codigoColegio"] = user.CodigoColegio;
+                Session["Colegio"] = user.UserName;
+                Session["idColegio"] = user.Id;
+                Session["DenominacionColegio"] = user.Denominacion;
+            }
+
+            int? cantVencimientos = (int)Session["cantVencimientos"];
 
             if (cantVencimientos != null)
             {
@@ -102,8 +112,6 @@ namespace GAFER.Controllers
         }
 
         // POST: Alumnos/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(Alumnos alumnos)
@@ -135,7 +143,7 @@ namespace GAFER.Controllers
 
             if (alumno.CodigoAlumno == "" || alumno.CodigoAlumno == null)
             {
-                return Json("Codigo Alumno es obligatorio", JsonRequestBehavior.AllowGet);
+                return Json("El código de alumno es obligatorio.", JsonRequestBehavior.AllowGet);
             }
             if (alumno != null)
             {
@@ -154,21 +162,21 @@ namespace GAFER.Controllers
 
                     //agrego valores necesarios
                     alumno.FechaAlta = DateTime.Now;
-                    alumno.IdColegio = db.AspNetUsers.Where(m => m.UserName == User.Identity.Name).FirstOrDefault().Id;
+                    alumno.IdColegio = (string)Session["idColegio"];//db.AspNetUsers.Where(m => m.UserName == User.Identity.Name).FirstOrDefault().Id;
 
                     db.Alumnos.Add(alumno);
                     db.SaveChanges();
                 }
                 catch (Exception ex)
                 {
-                    return Json("Error al actualizar el alumno" + ex.Message, JsonRequestBehavior.AllowGet);
+                    return Json("Error al generar el alta de alumno" + ex.Message, JsonRequestBehavior.AllowGet);
                 }
 
                 return Json("Success", JsonRequestBehavior.AllowGet);
             }
             else
             {
-                return Json("Error parametro nulo", JsonRequestBehavior.AllowGet);
+                return Json("Error, parametro inválido", JsonRequestBehavior.AllowGet);
             }
         }
         // GET: Alumnos/Edit/5
@@ -188,8 +196,6 @@ namespace GAFER.Controllers
         }
 
         // POST: Alumnos/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Alumnos alumnos)
@@ -239,9 +245,9 @@ namespace GAFER.Controllers
             return RedirectToAction("Index");
         }
 
-        public string GenerarPDF(TalonPagoFacil talon)
+        public string GenerarPDF(TalonPagoFacil talon, Talon talonweb)
         {
-            
+           
             try
             {
 
@@ -249,6 +255,13 @@ namespace GAFER.Controllers
                 string templateFile = Server.MapPath(System.Configuration.ConfigurationManager.AppSettings["templates"]) + "\\" + CodColegio + ".pdf"; 
                 //string oldFile = @"C:/Projects/AspMvcIdentity-master/GAFER/pdfs/template/ordenpago.pdf";
                 string newFile = Server.MapPath(System.Configuration.ConfigurationManager.AppSettings["repositorioTalones"]) + "\\" + CodColegio + "-"+ talon.datosTalon.IdAlumno +".pdf";
+
+                string formatoDecimal = System.Configuration.ConfigurationManager.AppSettings["formatoDecimal"];
+                //existo pdf previo
+                if (System.IO.File.Exists(newFile))
+                {
+                    System.IO.File.Delete(newFile);
+                }
 
                 // open the reader
                 PdfReader reader = new PdfReader(templateFile);
@@ -332,7 +345,9 @@ namespace GAFER.Controllers
 
                 //importe 1er venc
                 cb.BeginText();
-                text = talon.Importe1.ToString("#,##0.00");
+
+                text = talonweb.importe1;
+                //ext = Convert.ToDouble(talon.Importe1).ToString("#.##");
                 posX = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["1ImpPosX"]);
                 posY = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["1ImpPosY"]);
                 // put the alignment and coordinates here
@@ -354,7 +369,8 @@ namespace GAFER.Controllers
 
                     //2do vencimiento
                     cb.BeginText();
-                    text = talon.Importe2.ToString("#,##0.00");
+                    //text = talon.Importe2.ToString(nfi);
+                    text = talonweb.importe2;
                     posX = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["2ImpPosX"]);
                     posY = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["2ImpPosY"]);
                     // put the alignment and coordinates here
@@ -376,15 +392,15 @@ namespace GAFER.Controllers
 
                     //3er vencimiento
                     cb.BeginText();
-                    text = talon.Importe3.ToString("#,##0.00");
+
+                    // text = talon.Importe3.ToString(nfi);
+                    text = talonweb.importe3;
                     posX = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["3ImpPosX"]);
                     posY = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["3ImpPosY"]);
                     // put the alignment and coordinates here
                     cb.ShowTextAligned(1, text, posX, posY, 0);
                     cb.EndText();
                 }
-
-                
 
                 //CODIGO DE BARRA   
                 string pathFontI25 = System.Configuration.ConfigurationManager.AppSettings["fontI25"];
@@ -426,89 +442,51 @@ namespace GAFER.Controllers
             
         }
 
-        public ActionResult mostrarTalon()
-        {
-            if (!User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
-            string ruta = @"../pdfs/newFile.pdf";
-            if (ruta != null)
-            {
-                ViewBag.ruta = ruta;
-                return View("Talon");
-            }
-            else
-            {
-                ViewBag.Message = "No se pudo mostrar el pdf, consulte al soporte";
-                return View("Pago");
-            }
-        }
-
         public ActionResult SendMail(int id)
         {
-            Alumnos alumno = db.Alumnos.Where(m => m.IdAlumno == id).FirstOrDefault();
-
-
-            //creamos nuestra lista de archivos a enviar
-            List<string> lstArchivos = new List<string>();
-            //lstArchivos.Add("c:/archivo1.txt");
-            //lstArchivos.Add("c:/archivo2.txt");
-
-            //creamos nuestro objeto de la clase que hicimos
-            Mail oMail = new Mail(alumno.Mail, "GAFER - Emision de Pago Fácil", "GAFER - Emision de Pago Fácil", lstArchivos);
-
-            //y enviamos
-            if (oMail.enviaMail())
+            try
             {
-                return Json("Success", JsonRequestBehavior.AllowGet);
+                Alumnos alumno = db.Alumnos.Where(m => m.IdAlumno == id).FirstOrDefault();
 
+                string CodColegio = (string)Session["codigoColegio"];
+
+                string talon = Server.MapPath(System.Configuration.ConfigurationManager.AppSettings["repositorioTalones"]) + "\\" + CodColegio + "-" + alumno.IdAlumno + ".pdf";
+
+                if (System.IO.File.Exists(@talon))
+                {
+                    string mensaje = "Se adjunta orden de pago por cuenta y orden de " +
+                                    (string)Session["DenominacionColegio"] + "</br>" +
+                                    "Muchas Gracias</br>" +
+                                    "GAFER - Ordenes de Pago" ;
+                    Mail oMail = new Mail(alumno.Mail, mensaje, "Orden de pago - " + (string)Session["DenominacionColegio"], talon);
+                    
+                    //y enviamos
+                    if (oMail.enviaMail())
+                    {
+                        return Json("Success", JsonRequestBehavior.AllowGet);
+
+                    }
+                    else
+                    {
+                        log.Error("Error al intentar enviar el mail: " + oMail.error);
+                        return Json("Error", JsonRequestBehavior.AllowGet);
+
+                    }
+                }
+                else
+                {
+                    log.Error("No existe talon de pago para enviar, debe ser generardo antes.");
+                    return Json("No hay disponible ningun talon de pago para enviar, debe ser generardo antes.", JsonRequestBehavior.AllowGet);
+
+                }
             }
-            else
+            catch (Exception ex)
             {
-                log.Error("Error al enviar Mail: " + oMail.error);
-                return Json("Error", JsonRequestBehavior.AllowGet);
 
+                log.Error("Error en metodo SENDMAIL - " + ex);
+                return Json("Error en Send Mail", JsonRequestBehavior.AllowGet);
             }
-            //try
-            //{
-            //    Alumnos alumno = db.Alumnos.Where(m => m.IdAlumno == id).FirstOrDefault();
-
-
-            //    SmtpClient client = new SmtpClient("smtp.gmail.com", 587);
-
-            //    client.EnableSsl = true;
-
-            //    MailAddress from = new MailAddress("gabrieljaimerena@gmail.com", "GAFER - Emision de Pago Fácil");
-
-            //    MailAddress to = new MailAddress(alumno.Mail, alumno.Apellido + " " + alumno.Nombre);
-
-            //    MailMessage message = new MailMessage(from, to);
-
-            //    message.Body = "This is a test e-mail message sent using gmail as a relay server ";
-
-            //    string user = db.AspNetUsers.Where(m => m.CodigoColegio == codigoColegio).FirstOrDefault().UserName;
-            //    message.Subject = "Nueva solicitud de pago emitida por " + user;
-
-            //    NetworkCredential myCreds = new NetworkCredential("gabrieljaimerena@gmail.com", "“CHICOtazo1541", "");
-
-            //    client.Credentials = myCreds;
-            //    client.Send(message);
-
-            //    return Json("Success", JsonRequestBehavior.AllowGet);
-            //   // ViewBag.message = "El correo se envio exitosamente";
-            //}
-
-            //catch (Exception ex)
-            //{
-            //    log.Error("Error al enviar Mail: " + ex);
-            //    return Json("Error", JsonRequestBehavior.AllowGet);
-            //   // ViewBag.message = "Hubo un error al enviar el correo, intente nuevamente";
-            //}
-
-
-
+            
         }
     
         protected override void Dispose(bool disposing)
@@ -527,75 +505,85 @@ namespace GAFER.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
-            //Traer registros
-            string IdColegio = db.AspNetUsers.Where(m => m.UserName == User.Identity.Name).FirstOrDefault().Id;
-            IQueryable<Alumnos> memberCol = db.Alumnos.Where(m=> m.IdColegio == IdColegio).AsQueryable();
-
-            //Manejador de filtros
-            int totalCount = memberCol.Count();
-            IEnumerable<Alumnos> filteredMembers = memberCol;
-            if (!string.IsNullOrEmpty(param.sSearch))
+            try
             {
-                filteredMembers = memberCol
-                        .Where(m => m.Apellido.Contains(param.sSearch) ||
-                           m.CodigoAlumno.Contains(param.sSearch) ||
-                           m.Condicion.ToString().Contains(param.sSearch) ||
-                           m.FechaAlta.ToString().Contains(param.sSearch) ||
-                           m.Mail.Contains(param.sSearch) ||
-                           m.Nombre.Contains(param.sSearch) ||
-                           m.Observaciones.Contains(param.sSearch) ||
-                           m.Telefono.Contains(param.sSearch));
+                //Traer registros
+                string IdColegio = (string)Session["idColegio"];
+                IQueryable<Alumnos> memberCol = db.Alumnos.Where(m => m.IdColegio == IdColegio).AsQueryable();
+
+                //Manejador de filtros
+                int totalCount = memberCol.Count();
+                IEnumerable<Alumnos> filteredMembers = memberCol;
+                if (!string.IsNullOrEmpty(param.sSearch))
+                {
+                    filteredMembers = memberCol
+                            .Where(m => m.Apellido.Contains(param.sSearch) ||
+                               m.CodigoAlumno.Contains(param.sSearch) ||
+                               m.Condicion.ToString().Contains(param.sSearch) ||
+                               m.FechaAlta.ToString().Contains(param.sSearch) ||
+                               m.Mail.Contains(param.sSearch) ||
+                               m.Nombre.Contains(param.sSearch) ||
+                               m.Observaciones.Contains(param.sSearch) ||
+                               m.Telefono.Contains(param.sSearch));
+                }
+                //Manejador de orden
+                var sortIdx = Convert.ToInt32(Request["iSortCol_0"]);
+                Func<Alumnos, string> orderingFunction =
+                                    (
+                                 m => sortIdx == 0 ? m.CodigoAlumno :
+                                      sortIdx == 1 ? m.Apellido :
+                                      sortIdx == 2 ? m.Nombre :
+                                      sortIdx == 3 ? m.Mail :
+                                      sortIdx == 4 ? m.Observaciones :
+                                      sortIdx == 5 ? m.Condicion.ToString() :
+                                      sortIdx == 6 ? m.Telefono :
+                                      sortIdx == 7 ? m.FechaAlta.ToString() :
+                                      m.IdAlumno.ToString()
+                                      );
+                var sortDirection = Request["sSortDir_0"]; // asc or desc  
+                if (sortDirection == "asc")
+                    filteredMembers = filteredMembers.OrderBy(orderingFunction);
+                else
+                    filteredMembers = filteredMembers.OrderByDescending(orderingFunction);
+                var displayedMembers = filteredMembers
+                         .Skip(param.iDisplayStart)
+                         .Take(param.iDisplayLength);
+
+                //Manejardo de resultados
+                var result = from a in displayedMembers
+                             select new
+                             {
+                                 a.IdAlumno,
+                                 a.CodigoAlumno,
+                                 a.Apellido,
+                                 a.Nombre,
+                                 a.Mail,
+                                 a.Observaciones,
+                                 a.Condicion,
+                                 a.Telefono,
+                                 a.FechaAlta,
+                                 a.Importe1,
+                                 a.Importe2,
+                                 a.Importe3
+
+                             };
+                //Se devuelven los resultados por json
+                return Json(new
+                {
+                    sEcho = param.sEcho,
+                    iTotalRecords = totalCount,
+                    iTotalDisplayRecords = filteredMembers.Count(),
+                    aaData = result
+                },
+                   JsonRequestBehavior.AllowGet);
             }
-            //Manejador de orden
-            var sortIdx = Convert.ToInt32(Request["iSortCol_0"]);
-            Func<Alumnos, string> orderingFunction =
-                                (
-                             m => sortIdx == 0 ? m.CodigoAlumno :
-                                  sortIdx == 1 ? m.Apellido :
-                                  sortIdx == 2 ? m.Nombre :
-                                  sortIdx == 3 ? m.Mail :
-                                  sortIdx == 4 ? m.Observaciones :
-                                  sortIdx == 5 ? m.Condicion.ToString() :
-                                  sortIdx == 6 ? m.Telefono :
-                                  sortIdx == 7 ? m.FechaAlta.ToString() :
-                                  m.IdAlumno.ToString()
-                                  );
-            var sortDirection = Request["sSortDir_0"]; // asc or desc  
-            if (sortDirection == "asc")
-                filteredMembers = filteredMembers.OrderBy(orderingFunction);
-            else
-                filteredMembers = filteredMembers.OrderByDescending(orderingFunction);
-            var displayedMembers = filteredMembers
-                     .Skip(param.iDisplayStart)
-                     .Take(param.iDisplayLength);
-
-            //Manejardo de resultados
-            var result = from a in displayedMembers
-                         select new
-                         {
-                             a.IdAlumno,
-                             a.CodigoAlumno,
-                             a.Apellido,
-                             a.Nombre,
-                             a.Mail,
-                             a.Observaciones,
-                             a.Condicion,
-                             a.Telefono,
-                             a.FechaAlta,
-                             a.Importe1,
-                             a.Importe2,
-                             a.Importe3
-
-                         };
-            //Se devuelven los resultados por json
-            return Json(new
+            catch (Exception ex)
             {
-                sEcho = param.sEcho,
-                iTotalRecords = totalCount,
-                iTotalDisplayRecords = filteredMembers.Count(),
-                aaData = result
-            },
-               JsonRequestBehavior.AllowGet);
+
+                log.Error("Error GETDataAlumno - " + ex);
+                return Json("Error", JsonRequestBehavior.AllowGet);
+            }
+            
         }
 
         public ActionResult EliminarAlumnos(int id)
@@ -631,7 +619,6 @@ namespace GAFER.Controllers
             }
         }
 
-        
         public ActionResult GetDataAlumnoForEdit(int id)
         {
             if (!User.Identity.IsAuthenticated)
@@ -741,12 +728,16 @@ namespace GAFER.Controllers
                     //los importes tienen 6 digitos, 4 parte entera y dos para el decimal, sin separador
                     if (cantVencimientos > 0)
                     {
-                        var imp1_ = talon.importe1.Split('.');
+                        decimal importe1 = Convert.ToDecimal(talon.importe1.Replace(".", ","));
+                        importe1 = Math.Round(importe1, 2, MidpointRounding.AwayFromZero);
+
+                        var imp1_ = importe1.ToString().Split(',');
                         //imp1 = (Convert.ToDecimal(talon.importe1)).ToString();
                         while (imp1_[0].Length < 4) { imp1_[0] = "0" + imp1_[0]; }
 
                         if (imp1_.Length > 1)
                         {
+                            
                             while (imp1_[1].Length < 2) { imp1_[1] = imp1_[1] + "0"; }
                         }
                         else
@@ -759,7 +750,10 @@ namespace GAFER.Controllers
                     }
                     if (cantVencimientos > 1 )
                     {
-                        var imp2_ = talon.importe2.Split('.');
+                        decimal importe2 = Convert.ToDecimal(talon.importe2.Replace(".", ","));
+                        importe2 = Math.Round(importe2, 2, MidpointRounding.AwayFromZero);
+
+                        var imp2_ = importe2.ToString().Split(',');
                         //imp1 = (Convert.ToDecimal(talon.importe1)).ToString();
                         while (imp2_[0].Length < 4) { imp2_[0] = "0" + imp2_[0]; }
 
@@ -777,7 +771,10 @@ namespace GAFER.Controllers
                     }
                     if (cantVencimientos > 2)
                     {
-                        var imp3_ = talon.importe3.Split('.');
+                        decimal importe3 = Convert.ToDecimal(talon.importe3.Replace(".", ","));
+                        importe3 = Math.Round(importe3, 2, MidpointRounding.AwayFromZero);
+
+                        var imp3_ = importe3.ToString().Split(',');
                         //imp1 = (Convert.ToDecimal(talon.importe1)).ToString();
                         while (imp3_[0].Length < 4) { imp3_[0] = "0" + imp3_[0]; }
 
@@ -849,7 +846,9 @@ namespace GAFER.Controllers
                     db.Historial.Add(talonPF.datosTalon);
                     db.SaveChanges();
 
-                    string urlNewPdf = GenerarPDF(talonPF);
+                
+
+                    string urlNewPdf = GenerarPDF(talonPF, talon);
 
                     if (urlNewPdf== null)
                     {
@@ -874,35 +873,31 @@ namespace GAFER.Controllers
 
         public ActionResult DownloadPDF(int id)
         {
-            //string[] dirs = Directory.GetFiles(@"C:\Projects\AspMvcIdentity-master\GAFER\pdfs\", "*.pdf");
-
+ 
             if (!User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Login", "Account");
             }
 
+            //directorio de talones generados
             string repositorio = System.Configuration.ConfigurationManager.AppSettings["repositorioTalones"];
 
-
-            //List<string> lstAllFileName = (from itemFile in Directory.GetFiles(repositorio, "*.pdf")select Path.GetFileNameWithoutExtension(itemFile)).Cast<string>().ToList();
             List<string> lstAllFileName = (from itemFile in Directory.GetFiles(Server.MapPath(repositorio), "*.pdf")select Path.GetFileNameWithoutExtension(itemFile)).Cast<string>().ToList();
 
+            //busco y devuelve path del talon correspondiente al alumno
             foreach (string dir in lstAllFileName)
             {
-                string nameFile = codigoColegio + "-" + id.ToString();
+                string nameFile = Session["codigoColegio"] + "-" + id.ToString();
                 if (nameFile == dir)
                 {
-                    string pdfPath = codigoColegio + "-" + id + ".pdf";
+                    string pdfPath = Session["codigoColegio"] + "-" + id + ".pdf";
                     return Json(pdfPath, JsonRequestBehavior.AllowGet);
                 }
             }
 
-            log.Error("Error al intenetar descargar el PDF");
+            log.Error("Error al intentar descargar el PDF");
             return Json("notFound", JsonRequestBehavior.AllowGet);
         }
-
-                   
-
        
     }
 }
