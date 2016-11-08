@@ -14,7 +14,7 @@
           <Property Name="CodigoAlumno" Type="varchar" MaxLength="9" Nullable="false" />
           <Property Name="Apellido" Type="varchar" MaxLength="50" />
           <Property Name="Nombre" Type="varchar" MaxLength="50" />
-          <Property Name="Mail" Type="nvarchar" MaxLength="50" />
+          <Property Name="Mail" Type="nvarchar(max)" />
           <Property Name="Observaciones" Type="nvarchar" MaxLength="50" />
           <Property Name="Condicion" Type="int" />
           <Property Name="Telefono" Type="nvarchar" MaxLength="50" />
@@ -229,7 +229,7 @@
           <Property Name="CodigoAlumno" Type="String" MaxLength="9" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Apellido" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Mail" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Mail" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Observaciones" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Condicion" Type="Int32" />
           <Property Name="Telefono" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
